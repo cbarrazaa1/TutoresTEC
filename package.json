@@ -1,0 +1,16 @@
+{
+  "name": "tutorestec",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^1.19.4"
+  }
+}
