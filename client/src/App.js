@@ -4,11 +4,14 @@ import {BrowserRouter, Switch, Route, Link} from 'react-router-dom';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
 import {Navbar} from 'react-bootstrap';
+import useDimensions from 'react-use-dimensions';
 
 function App() {
+  const [navbar, {height}] = useDimensions();
+
   return (
-    <>
-      <Navbar bg="primary" variant="dark" style={{backgroundColor: 'red'}}>
+    <div style={{height: `calc(100% - ${height}px)`}}>
+      <Navbar ref={navbar} bg="primary" variant="dark">
         <Navbar.Brand>TutoresTEC</Navbar.Brand>
       </Navbar>
       <BrowserRouter>
@@ -21,7 +24,7 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 
