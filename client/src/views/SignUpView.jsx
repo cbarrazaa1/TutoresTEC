@@ -116,5 +116,5 @@ const styles = {
     justifyContent: 'center',
   },
 };
-
+console.log('hola');
 export default SignUpView;
