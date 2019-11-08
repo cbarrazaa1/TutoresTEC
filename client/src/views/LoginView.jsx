@@ -42,11 +42,12 @@ function LoginView() {
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <Card.Body style={styles.cardBody}>
+        <Card.Body>
           <Form.Group>
             <h2>Login</h2>
             <p>Enter your login information below.</p>
           </Form.Group>
+
           <Form.Group>
             <InputGroup>
               <InputGroup.Prepend>
@@ -81,8 +82,9 @@ function LoginView() {
             Login
           </Button>
         </Card.Body>
+
         <Card.Footer>
-          Don't have an account? <Link to="/signup">Sign up here</Link>
+          Don't have an account? <Link to="/signup">Sign up here!</Link>
         </Card.Footer>
       </Card>
     </div>
