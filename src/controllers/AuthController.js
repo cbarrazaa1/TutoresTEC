@@ -8,12 +8,12 @@ require('dotenv').config();
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
-  const {username, name, password, description} = req.body;
-  const user = await User.findOne({username: username});
+  const {email, name, password, description} = req.body;
+  const user = await User.findOne({email: email});
   if (!user) {
     const encryptedPassword = await bcrypt.hash(password, 10);
     User.create({
-      username,
+      email,
       name,
       password: encryptedPassword,
       description,
@@ -23,18 +23,19 @@ router.post('/signup', async (req, res) => {
   } else {
     return res
       .status(403)
-      .json({success: false, message: 'Oh oh! Username taken!'});
+      .json({success: false, message: 'Oh oh! Email taken!'});
   }
 });
 
 router.post('/login', async (req, res) => {
-  const {username, password} = req.body;
-  const user = await User.findOne({username});
+  const {email, password} = req.body;
+  const user = await User.findOne({email});
+  console.log(req.body);
 
   if (user) {
     const realPassword = user.get('password');
     const isValid = await bcrypt.compare(password, realPassword);
-
+    console.log(isValid);
     if (isValid) {
       return res.status(200).json({success: true, message: 'Login successful'});
     } else {

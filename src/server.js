@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const User = require('./models/User');
 const AuthController = require('./controllers/AuthController');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -12,6 +13,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, '/../client/build')));
 
