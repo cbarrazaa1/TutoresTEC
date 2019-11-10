@@ -35,8 +35,13 @@ router.post('/login', async (req, res) => {
   if (user) {
     const realPassword = user.get('password');
     const isValid = await bcrypt.compare(password, realPassword);
-    console.log(isValid);
     if (isValid) {
+      const token = jwt.sign({id: user.get('_id')}, process.env.JWT_SECRET, {
+        issuer: 'TutoresTEC',
+        algorithm: 'HS256',
+        expiresIn: '30d',
+      });
+      res.cookie('jwt', token);
       return res.status(200).json({success: true, message: 'Login successful'});
     } else {
       return res
@@ -45,6 +50,25 @@ router.post('/login', async (req, res) => {
     }
   } else {
     return res.status(404).json({success: false, message: 'User not found'});
+  }
+});
+
+router.get('/validateToken', (req, res) => {
+  const verifyOptions = {
+    issuer: 'TutoresTEC',
+    algorithms: ['HS256'],
+    expiresIn: '30d',
+  };
+
+  try {
+    const verified = jwt.verify(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+      verifyOptions,
+    );
+    return res.status(200).json({success: true, message: 'Valid token'});
+  } catch {
+    return res.status(401).json({success: false, message: 'Token not valid'});
   }
 });
 
