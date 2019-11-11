@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Button, Form, Card, InputGroup} from 'react-bootstrap';
 import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {MdEmail, MdLock} from 'react-icons/md';
 
-function LoginView() {
+function LoginView({history}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,14 +29,18 @@ function LoginView() {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/auth/login', {
+    const response = await fetch('http://localhost:3001/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({email, password}),
     });
     const json = await response.json();
+    if (json.success) {
+      history.push('/home');
+    }
   };
 
   return (
@@ -108,4 +112,4 @@ const styles = {
   },
 };
 
-export default LoginView;
+export default withRouter(LoginView);

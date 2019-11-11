@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(express.static(path.join(__dirname, '/../client/build')));
 

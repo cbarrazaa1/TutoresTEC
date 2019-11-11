@@ -3,9 +3,11 @@ import './App.css';
 import {BrowserRouter, Switch, Route, Link, Redirect} from 'react-router-dom';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
+import HomeView from './views/HomeView';
 import {Navbar} from 'react-bootstrap';
 import useDimensions from 'react-use-dimensions';
 import {useState, useEffect} from 'react';
+import Cookies from 'js-cookie';
 
 function App() {
   const [navbar, {height}] = useDimensions();
@@ -13,13 +15,20 @@ function App() {
 
   useEffect(() => {
     async function checkToken() {
-      const response = await fetch('http://localhost:3001/api/validateToken', {
-        method: 'GET',
-      });
+      const response = await fetch(
+        'http://localhost:3001/api/auth/validateToken',
+        {
+          method: 'GET',
+          credentials: 'include',
+        },
+      );
       const json = await response.json();
       setIsValidToken(json.success);
-    }
 
+      setTimeout(() => {
+        setIsValidToken(false);
+      }, 4000);
+    }
     checkToken();
   }, []);
 
@@ -31,12 +40,14 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact={true} path="/">
-            <LoginView />
+            {isValidToken ? <Redirect to="/home" /> : <LoginView />}
           </Route>
           <Route path="/signup">
             <SignUpView />
           </Route>
-          <Route path="/home"></Route>
+          <Route path="/home">
+            <HomeView />
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>
