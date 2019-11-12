@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {Button, Form, Card, Col, InputGroup} from 'react-bootstrap';
 import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {FaGraduationCap, FaSortNumericUp} from 'react-icons/fa';
 import {IoIosRocket} from 'react-icons/io';
 
-function SignUpView() {
+function SignUpView({history}) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -58,11 +58,12 @@ function SignUpView() {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/auth/signup', {
+    const response = await fetch('http://localhost:3001/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         email,
         password,
@@ -74,6 +75,11 @@ function SignUpView() {
       }),
     });
     const json = await response.json();
+    if (json.success) {
+      history.push('/home');
+    } else {
+      alert(json.message);
+    }
   };
 
   return (
@@ -199,4 +205,4 @@ const styles = {
   },
 };
 
-export default SignUpView;
+export default withRouter(SignUpView);

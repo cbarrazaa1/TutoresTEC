@@ -12,17 +12,23 @@ router.post('/signup', async (req, res) => {
   const user = await User.findOne({email: email});
   if (!user) {
     const encryptedPassword = await bcrypt.hash(password, 10);
-    User.create({
+    const newUser = await User.create({
       email,
       name,
       password: encryptedPassword,
       description,
       userType: 0,
     });
+    const token = jwt.sign({id: newUser.get('_id')}, process.env.JWT_SECRET, {
+      issuer: 'TutoresTEC',
+      algorithm: 'HS256',
+      expiresIn: '30d',
+    });
+    res.cookie('jwt', token);
     return res.status(200).json({success: true, message: 'User created'});
   } else {
     return res
-      .status(403)
+      .status(401)
       .json({success: false, message: 'Oh oh! Email taken!'});
   }
 });
