@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-  Button,
-  Form,
-  Card,
-  Col,
-  InputGroup,
-  ListGroup,
-  Image,
-} from 'react-bootstrap';
+import {ButtonGroup, Button, ListGroup, Image} from 'react-bootstrap';
 import {useState} from 'react';
 import {Link} from 'react-router-dom';
 import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
@@ -25,21 +17,19 @@ function HomeView() {
         />
       </div>
       <ListGroup style={styles.options} as="ul" variant="flush">
-        <ListGroup.Item as="li" disabled>
-          Search
-        </ListGroup.Item>
-        <ListGroup.Item as="li" active>
+        <ListGroup.Item action active>
           Home
         </ListGroup.Item>
-        <ListGroup.Item as="li" disabled>
-          Notifications
+        <ListGroup.Item action>Search</ListGroup.Item>
+        <ListGroup.Item action>Notifications</ListGroup.Item>
+        <ListGroup.Item action>Inbox</ListGroup.Item>
+        <ListGroup.Item action>My tutors</ListGroup.Item>
+        <ListGroup.Item style={styles.tutorBtnContainer}>
+          <Button variant="primary" block>
+            Become tutor
+          </Button>
         </ListGroup.Item>
-        <ListGroup.Item as="li" disabled>
-          Inbox
-        </ListGroup.Item>
-        <ListGroup.Item as="li" disabled>
-          My tutors
-        </ListGroup.Item>
+        <ListGroup.Item action>Log out</ListGroup.Item>
       </ListGroup>
     </div>
   );
@@ -50,7 +40,9 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '20%',
+    height: '100%',
     minWidth: '300px',
+    border: 'solid black',
   },
   profile: {
     display: 'flex',
@@ -62,6 +54,7 @@ const styles = {
     width: '200px',
     height: '200px',
     alignSelf: 'center',
+    marginTop: '10px',
   },
   profileImg: {
     width: '150px',
@@ -71,6 +64,11 @@ const styles = {
     padding: '5px',
     marginTop: '10px',
     marginBottom: '10px',
+  },
+  tutorBtnContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
