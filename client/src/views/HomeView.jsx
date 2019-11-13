@@ -8,9 +8,7 @@ function HomeView() {
     <div style={styles.root}>
       <SideBar />
       <Switch>
-        <Route path="/home">
-          <p>Hi</p>
-        </Route>
+        <Route path="/home"></Route>
       </Switch>
     </div>
   );
