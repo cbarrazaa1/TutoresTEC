@@ -1,9 +1,8 @@
 import * as React from 'react';
-import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {FaHome, FaSearch, FaInbox, FaChalkboardTeacher} from 'react-icons/fa';
-import {IoIosRocket, IoIosNotifications} from 'react-icons/io';
+import {IoIosNotifications} from 'react-icons/io';
 import {FiPower} from 'react-icons/fi';
-import {ButtonGroup, Button, ListGroup, Image} from 'react-bootstrap';
+import {Button, ListGroup, Image} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
 function SideBar() {
@@ -13,7 +12,9 @@ function SideBar() {
       <ListGroup as="ul" variant="flush">
         <ListGroup.Item style={styles.listItem} action active>
           <FaHome style={styles.icon}></FaHome>
-          Home
+          <Link to="/home" style={{color: 'white'}}>
+            Home
+          </Link>
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action>
           <FaSearch style={styles.icon}></FaSearch>
