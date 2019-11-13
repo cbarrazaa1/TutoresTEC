@@ -98,11 +98,7 @@ function SignUpView({history}) {
                   <MdEmail />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control
-                placeholder="Email"
-                type="email"
-                onChange={onEmailChange}
-              />
+              <Form.Control placeholder="Email" type="email" onChange={onEmailChange} />
             </InputGroup>
           </Form.Group>
 
@@ -113,11 +109,7 @@ function SignUpView({history}) {
                   <MdPerson />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control
-                placeholder="Name"
-                type="text"
-                onChange={onNameChange}
-              />
+              <Form.Control placeholder="Name" type="text" onChange={onNameChange} />
             </InputGroup>
           </Form.Group>
 
@@ -129,20 +121,12 @@ function SignUpView({history}) {
                     <MdLock />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control
-                  placeholder="Password"
-                  type="password"
-                  onChange={onPasswordChange}
-                />
+                <Form.Control placeholder="Password" type="password" onChange={onPasswordChange} />
               </InputGroup>
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Form.Control
-                placeholder="Confirm password"
-                type="password"
-                onChange={onConfirmedPasswordChange}
-              />
+              <Form.Control placeholder="Confirm password" type="password" onChange={onConfirmedPasswordChange} />
             </Form.Group>
           </Form.Row>
 
@@ -155,11 +139,7 @@ function SignUpView({history}) {
                     <FaGraduationCap />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control
-                  placeholder="Bachelor"
-                  type="text"
-                  onChange={onBachelorChange}
-                />
+                <Form.Control placeholder="Bachelor" type="text" onChange={onBachelorChange} />
               </InputGroup>
             </Form.Group>
 
@@ -170,12 +150,7 @@ function SignUpView({history}) {
                     <IoIosRocket />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control
-                  placeholder="Semester"
-                  type="number"
-                  onChange={onSemesterChange}
-                  min={0}
-                />
+                <Form.Control placeholder="Semester" type="number" onChange={onSemesterChange} min={0} />
               </InputGroup>
             </Form.Group>
           </Form.Row>
