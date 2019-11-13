@@ -6,6 +6,7 @@ import {Button, ListGroup, Image} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {useState} from 'react';
 import {withRouter} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function SideBar({history}) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -30,6 +31,11 @@ function SideBar({history}) {
         break;
     }
     setActiveIndex(index);
+  };
+
+  const onLogoutClick = () => {
+    Cookies.set('jwt', '');
+    history.replace('/');
   };
 
   return (
@@ -61,7 +67,7 @@ function SideBar({history}) {
             Become tutor
           </Button>
         </ListGroup.Item>
-        <ListGroup.Item style={styles.listItem} action>
+        <ListGroup.Item style={styles.listItem} action onClick={onLogoutClick}>
           <FiPower style={styles.icon}></FiPower>
           Logout
         </ListGroup.Item>
