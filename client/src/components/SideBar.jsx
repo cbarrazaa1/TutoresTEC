@@ -4,6 +4,7 @@ import {FaHome, FaSearch, FaInbox, FaChalkboardTeacher} from 'react-icons/fa';
 import {IoIosRocket, IoIosNotifications} from 'react-icons/io';
 import {FiPower} from 'react-icons/fi';
 import {ButtonGroup, Button, ListGroup, Image} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
 function SideBar() {
   return (
@@ -20,7 +21,7 @@ function SideBar() {
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action>
           <IoIosNotifications style={styles.icon}></IoIosNotifications>
-          Notifications
+          <Link to="/home/notifications">Notifications</Link>
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action>
           <FaInbox style={styles.icon}></FaInbox>

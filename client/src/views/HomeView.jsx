@@ -2,13 +2,17 @@ import * as React from 'react';
 import {useState} from 'react';
 import {Link, Switch, Route} from 'react-router-dom';
 import SideBar from '../components/SideBar';
+import NotificationsView from './NotificationsView';
 
 function HomeView() {
   return (
     <div style={styles.root}>
       <SideBar />
       <Switch>
-        <Route path="/home"></Route>
+        <Route exact path="/home"></Route>
+        <Route exact path="/home/notifications">
+          <NotificationsView />
+        </Route>
       </Switch>
     </div>
   );
