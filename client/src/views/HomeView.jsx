@@ -31,7 +31,6 @@ const styles = {
     flexDirection: 'row',
     width: '100%',
     height: '100%',
-    padding: '10px',
   },
   title: {
     fontWeight: 200,
@@ -39,8 +38,7 @@ const styles = {
   container: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%',
-    height: '100%',
+    flex: 1,
     padding: '10px',
   },
 };
