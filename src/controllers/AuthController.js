@@ -10,6 +10,7 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
   const {email, name, password, description} = req.body;
   const user = await User.findOne({email: email});
+
   if (!user) {
     const encryptedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
@@ -19,13 +20,18 @@ router.post('/signup', async (req, res) => {
       description,
       userType: 0,
     });
-    const token = jwt.sign({id: newUser.get('_id')}, process.env.JWT_SECRET, {
+
+    // create auth token
+    const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET, {
       issuer: 'TutoresTEC',
       algorithm: 'HS256',
       expiresIn: '30d',
     });
+
+    // set token to user's cookies
     res.cookie('jwt', token);
-    return res.status(200).json({success: true, message: 'User created'});
+
+    return res.status(200).json({success: true, message: 'User created', user: newUser});
   } else {
     return res.status(401).json({success: false, message: 'Oh oh! Email taken!'});
   }
@@ -36,14 +42,18 @@ router.post('/login', async (req, res) => {
   const user = await User.findOne({email});
 
   if (user) {
-    const realPassword = user.get('password');
+    const realPassword = user.password;
     const isValid = await bcrypt.compare(password, realPassword);
+
     if (isValid) {
-      const token = jwt.sign({id: user.get('_id')}, process.env.JWT_SECRET, {
+      // create auth token
+      const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {
         issuer: 'TutoresTEC',
         algorithm: 'HS256',
         expiresIn: '30d',
       });
+
+      // set token to user's cookies
       res.cookie('jwt', token);
 
       // populate user object
@@ -58,7 +68,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/validateToken', (req, res) => {
+router.get('/validateToken', async (req, res) => {
   const verifyOptions = {
     issuer: 'TutoresTEC',
     algorithms: ['HS256'],
@@ -66,8 +76,11 @@ router.get('/validateToken', (req, res) => {
   };
 
   try {
-    const verified = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, verifyOptions);
-    return res.status(200).json({success: true, message: 'Valid token'});
+    const {id} = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, verifyOptions);
+    const user = await User.findById(id);
+    const populatedUser = await user.populateReferences();
+
+    return res.status(200).json({success: true, message: 'Valid token', user: populatedUser});
   } catch {
     return res.status(401).json({success: false, message: 'Token not valid'});
   }
