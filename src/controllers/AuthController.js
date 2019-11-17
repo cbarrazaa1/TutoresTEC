@@ -33,7 +33,7 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const {email, password} = req.body;
-  const user = await User.findOne({email}).populate('notifications');
+  const user = await User.findOne({email});
 
   if (user) {
     const realPassword = user.get('password');
@@ -46,10 +46,10 @@ router.post('/login', async (req, res) => {
       });
       res.cookie('jwt', token);
 
-      // fetch all necessary data
-      user.fetchAllData();
+      // populate user object
+      let populatedUser = await user.populateReferences();
 
-      return res.status(200).json({success: true, message: 'Login successful', user});
+      return res.status(200).json({success: true, message: 'Login successful', user: populatedUser});
     } else {
       return res.status(401).json({success: false, message: 'Password is incorrect'});
     }

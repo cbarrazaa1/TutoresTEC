@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Notification = require('./Notification');
+const {Notification} = require('./Notification');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -40,10 +40,21 @@ const UserSchema = new mongoose.Schema({
   ],
 });
 
-UserSchema.methods.fetchAllData = function() {
-  this.notifications = this.notifications.map(async id => {
-    return await Notification.findById(id);
-  });
+UserSchema.methods.populateReferences = async function() {
+  this.notifications = await Promise.all(
+    this.notifications.map(async id => {
+      const notification = await Notification.findById(id);
+      notification.receiver = await User.findById(notification.receiver);
+
+      if (notification.triggeredBy != null) {
+        notification.triggeredBy = await User.findById(notification.triggeredBy);
+      }
+
+      return notification;
+    }),
+  );
+
+  return this;
 };
 
 const User = mongoose.model('user', UserSchema);
