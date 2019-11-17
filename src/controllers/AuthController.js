@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const {User} = require('../models/User');
 
 require('dotenv').config();
 
@@ -27,16 +27,13 @@ router.post('/signup', async (req, res) => {
     res.cookie('jwt', token);
     return res.status(200).json({success: true, message: 'User created'});
   } else {
-    return res
-      .status(401)
-      .json({success: false, message: 'Oh oh! Email taken!'});
+    return res.status(401).json({success: false, message: 'Oh oh! Email taken!'});
   }
 });
 
 router.post('/login', async (req, res) => {
   const {email, password} = req.body;
-  const user = await User.findOne({email});
-  console.log(req.body);
+  const user = await User.findOne({email}).populate('notifications');
 
   if (user) {
     const realPassword = user.get('password');
@@ -48,11 +45,13 @@ router.post('/login', async (req, res) => {
         expiresIn: '30d',
       });
       res.cookie('jwt', token);
-      return res.status(200).json({success: true, message: 'Login successful'});
+
+      // fetch all necessary data
+      user.fetchAllData();
+
+      return res.status(200).json({success: true, message: 'Login successful', user});
     } else {
-      return res
-        .status(401)
-        .json({success: false, message: 'Password is incorrect'});
+      return res.status(401).json({success: false, message: 'Password is incorrect'});
     }
   } else {
     return res.status(404).json({success: false, message: 'User not found'});
@@ -67,11 +66,7 @@ router.get('/validateToken', (req, res) => {
   };
 
   try {
-    const verified = jwt.verify(
-      req.cookies.jwt,
-      process.env.JWT_SECRET,
-      verifyOptions,
-    );
+    const verified = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, verifyOptions);
     return res.status(200).json({success: true, message: 'Valid token'});
   } catch {
     return res.status(401).json({success: false, message: 'Token not valid'});

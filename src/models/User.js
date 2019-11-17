@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Notification = require('./Notification');
+
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -30,8 +32,20 @@ const UserSchema = new mongoose.Schema({
       required: false,
     },
   },
+  notifications: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'notification',
+    },
+  ],
 });
+
+UserSchema.methods.fetchAllData = function() {
+  this.notifications = this.notifications.map(async id => {
+    return await Notification.findById(id);
+  });
+};
 
 const User = mongoose.model('user', UserSchema);
 
-module.exports = User;
+module.exports = {User, UserSchema};

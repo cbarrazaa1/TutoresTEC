@@ -3,9 +3,10 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const User = require('./models/User');
 const AuthController = require('./controllers/AuthController');
 const cors = require('cors');
+const {Notification} = require('./models/Notification');
+const {User} = require('./models/User');
 
 require('dotenv').config();
 
@@ -30,7 +31,7 @@ app.listen(port, () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  mongoose.connection.once('open', () => {
+  mongoose.connection.once('open', async () => {
     console.log('Connected to mongo');
   });
 });
