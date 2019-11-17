@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Button, Form, Card, InputGroup} from 'react-bootstrap';
-import {useState, useContext} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import {useContext, useState} from 'react';
+import {Button, Card, Form, InputGroup} from 'react-bootstrap';
 import {MdEmail, MdLock} from 'react-icons/md';
+import {Link, withRouter} from 'react-router-dom';
 import UserContext from '../context/UserContext';
 
 function LoginView({history}) {

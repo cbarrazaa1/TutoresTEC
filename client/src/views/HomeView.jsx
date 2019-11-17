@@ -1,10 +1,8 @@
 import * as React from 'react';
-import {useState} from 'react';
-import {Card} from 'react-bootstrap';
-import {Link, Switch, Route} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
+import Post from '../components/Post';
 import SideBar from '../components/SideBar';
 import NotificationsView from './NotificationsView';
-import Post from '../components/Post';
 
 function HomeView() {
   return (

@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
 import {Navbar} from 'react-bootstrap';
-import useDimensions from 'react-use-dimensions';
-import MainRouter from './MainRouter';
 import {BrowserRouter} from 'react-router-dom';
+import useDimensions from 'react-use-dimensions';
+import './App.css';
 import {UserContextProvider} from './context/UserContext';
+import MainRouter from './MainRouter';
 
 function App() {
   const [navbar, {height}] = useDimensions();

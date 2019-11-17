@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Button, Form, Card, Col, InputGroup} from 'react-bootstrap';
-import {useState, useContext} from 'react';
-import {withRouter} from 'react-router-dom';
-import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
-import {FaGraduationCap, FaSortNumericUp} from 'react-icons/fa';
+import {useContext, useState} from 'react';
+import {Button, Card, Col, Form, InputGroup} from 'react-bootstrap';
+import {FaGraduationCap} from 'react-icons/fa';
 import {IoIosRocket} from 'react-icons/io';
+import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
+import {withRouter} from 'react-router-dom';
 import UserContext from '../context/UserContext';
 
 function SignUpView({history}) {

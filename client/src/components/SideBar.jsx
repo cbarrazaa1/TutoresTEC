@@ -1,12 +1,11 @@
-import * as React from 'react';
-import {FaHome, FaSearch, FaInbox, FaChalkboardTeacher} from 'react-icons/fa';
-import {IoIosNotifications} from 'react-icons/io';
-import {FiPower} from 'react-icons/fi';
-import {Button, ListGroup, Image} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
-import {useState, useContext} from 'react';
-import {withRouter} from 'react-router-dom';
 import Cookies from 'js-cookie';
+import * as React from 'react';
+import {useContext, useState} from 'react';
+import {Button, Image, ListGroup} from 'react-bootstrap';
+import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
+import {FiPower} from 'react-icons/fi';
+import {IoIosNotifications} from 'react-icons/io';
+import {withRouter} from 'react-router-dom';
 import UserContext from '../context/UserContext';
 
 function SideBar({history}) {

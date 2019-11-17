@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {BrowserRouter, Switch, Route, Link, Redirect} from 'react-router-dom';
+import {useContext, useEffect, useState} from 'react';
+import {Redirect, Route, Switch} from 'react-router-dom';
+import UserContext from './context/UserContext';
+import HomeView from './views/HomeView';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
-import HomeView from './views/HomeView';
-import {useState, useEffect, useContext} from 'react';
-import UserContext, {UserContextProvider} from './context/UserContext';
 
 function MainRouter() {
   const [isValidToken, setIsValidToken] = useState(false);
