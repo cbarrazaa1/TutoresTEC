@@ -4,12 +4,14 @@ import {IoIosNotifications} from 'react-icons/io';
 import {FiPower} from 'react-icons/fi';
 import {Button, ListGroup, Image} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 import {withRouter} from 'react-router-dom';
 import Cookies from 'js-cookie';
+import UserContext from '../context/UserContext';
 
 function SideBar({history}) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const {user} = useContext(UserContext);
 
   const isActive = index => {
     return index === activeIndex;
@@ -40,7 +42,10 @@ function SideBar({history}) {
 
   return (
     <div style={styles.container}>
-      <Image style={styles.profileImg} src={require('../img/userprofile.png')} />
+      <div style={styles.profileContainer}>
+        <Image style={styles.profileImg} src={require('../img/userprofile.png')} />
+        {user != null && <p style={styles.userNameText}>Hello {user.name}!</p>}
+      </div>
       <ListGroup as="ul" variant="flush">
         <ListGroup.Item style={styles.listItem} action active={isActive(0)} onClick={() => onOptionClick(0)}>
           <FaHome style={styles.icon}></FaHome>
@@ -91,12 +96,21 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '50%',
-    width: '50px',
-    height: '50px',
+    width: '40px',
+    height: '40px',
     alignSelf: 'flex-start',
     marginLeft: '10px',
     marginTop: '10px',
     marginBottom: '10px',
+  },
+  profileContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userNameText: {
+    margin: 0,
+    marginLeft: '8px',
   },
   tutorBtnContainer: {
     display: 'flex',
