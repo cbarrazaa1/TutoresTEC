@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {Button, Form, Card, InputGroup} from 'react-bootstrap';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {MdEmail, MdLock} from 'react-icons/md';
+import UserContext from '../context/UserContext';
 
 function LoginView({history}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const {setUser} = useContext(UserContext);
 
   const onEmailChange = e => {
     setEmail(e.target.value);
@@ -38,7 +40,9 @@ function LoginView({history}) {
       body: JSON.stringify({email, password}),
     });
     const json = await response.json();
+
     if (json.success) {
+      setUser(json.user);
       history.push('/home');
     }
   };
@@ -59,11 +63,7 @@ function LoginView({history}) {
                   <MdEmail />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control
-                placeholder="Email"
-                type="email"
-                onChange={onEmailChange}
-              />
+              <Form.Control placeholder="Email" type="email" onChange={onEmailChange} />
             </InputGroup>
           </Form.Group>
 
@@ -74,11 +74,7 @@ function LoginView({history}) {
                   <MdLock />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control
-                placeholder="Password"
-                type="password"
-                onChange={onPasswordChange}
-              />
+              <Form.Control placeholder="Password" type="password" onChange={onPasswordChange} />
             </InputGroup>
           </Form.Group>
 

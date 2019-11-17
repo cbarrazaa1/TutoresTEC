@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {Button, Form, Card, Col, InputGroup} from 'react-bootstrap';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 import {withRouter} from 'react-router-dom';
 import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {FaGraduationCap, FaSortNumericUp} from 'react-icons/fa';
 import {IoIosRocket} from 'react-icons/io';
+import UserContext from '../context/UserContext';
 
 function SignUpView({history}) {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ function SignUpView({history}) {
   const [confirmedPassword, setConfirmedPassword] = useState('');
   const [semester, setSemester] = useState('');
   const [bachelor, setBachelor] = useState('');
+  const {setUser} = useContext(UserContext);
 
   const onEmailChange = e => {
     setEmail(e.target.value);
@@ -76,6 +78,7 @@ function SignUpView({history}) {
     });
     const json = await response.json();
     if (json.success) {
+      setUser(json.user);
       history.push('/home');
     } else {
       alert(json.message);
