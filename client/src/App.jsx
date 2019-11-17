@@ -6,8 +6,9 @@ import SignUpView from './views/SignUpView';
 import HomeView from './views/HomeView';
 import {Navbar} from 'react-bootstrap';
 import useDimensions from 'react-use-dimensions';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import Cookies from 'js-cookie';
+import UserContext, {UserContextProvider} from './context/UserContext';
 
 function App() {
   const [navbar, {height}] = useDimensions();
@@ -15,19 +16,12 @@ function App() {
 
   useEffect(() => {
     async function checkToken() {
-      const response = await fetch(
-        'http://localhost:3001/api/auth/validateToken',
-        {
-          method: 'GET',
-          credentials: 'include',
-        },
-      );
+      const response = await fetch('http://localhost:3001/api/auth/validateToken', {
+        method: 'GET',
+        credentials: 'include',
+      });
       const json = await response.json();
       setIsValidToken(json.success);
-
-      setTimeout(() => {
-        setIsValidToken(false);
-      }, 4000);
     }
     checkToken();
   }, []);
@@ -38,17 +32,19 @@ function App() {
         <Navbar.Brand>TutoresTEC</Navbar.Brand>
       </Navbar>
       <BrowserRouter>
-        <Switch>
-          <Route exact={true} path="/">
-            {isValidToken ? <Redirect to="/home" /> : <LoginView />}
-          </Route>
-          <Route path="/signup">
-            <SignUpView />
-          </Route>
-          <Route path="/home">
-            <HomeView />
-          </Route>
-        </Switch>
+        <UserContextProvider>
+          <Switch>
+            <Route exact={true} path="/">
+              {isValidToken ? <Redirect to="/home" /> : <LoginView />}
+            </Route>
+            <Route path="/signup">
+              <SignUpView />
+            </Route>
+            <Route path="/home">
+              <HomeView />
+            </Route>
+          </Switch>
+        </UserContextProvider>
       </BrowserRouter>
     </div>
   );
