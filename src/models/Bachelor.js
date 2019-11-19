@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {Course} = require('./Course');
 
 const BachelorSchema = new mongoose.Schema({
   name: {
@@ -19,6 +18,8 @@ const BachelorSchema = new mongoose.Schema({
 });
 
 BachelorSchema.methods.populateReferences = async function() {
+  const Course = mongoose.model('course');
+
   this.relatedCourses = await Promise.all(
     this.relatedCourses.map(async id => {
       const course = await Course.findById(id);

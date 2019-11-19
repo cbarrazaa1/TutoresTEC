@@ -70,3 +70,5 @@ router.put('/edit/:id', async (req, res) => {
     bachelor,
   });
 });
+
+module.exports = router;

@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const AuthController = require('./controllers/AuthController');
+const BachelorController = require('./controllers/BachelorController');
+const CourseController = require('./controllers/CourseController');
 const cors = require('cors');
 const {Notification} = require('./models/Notification');
 const {User} = require('./models/User');
@@ -22,6 +24,8 @@ app.use(express.static(path.join(__dirname, '/../client/build')));
 
 // api endpoints
 app.use('/api/auth', AuthController);
+app.use('/api/bachelors', BachelorController);
+app.use('/api/courses', CourseController);
 
 // serve react in any other endpoint
 app.get('*', (req, res) => {
