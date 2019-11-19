@@ -44,13 +44,7 @@ UserSchema.methods.populateReferences = async function() {
   this.notifications = await Promise.all(
     this.notifications.map(async id => {
       const notification = await Notification.findById(id);
-      notification.receiver = await User.findById(notification.receiver);
-
-      if (notification.triggeredBy != null) {
-        notification.triggeredBy = await User.findById(notification.triggeredBy);
-      }
-
-      return notification;
+      return await notification.populateReferences();
     }),
   );
 
