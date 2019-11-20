@@ -8,7 +8,7 @@ require('dotenv').config();
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
-  const {email, name, password, description} = req.body;
+  const {email, name, password, bachelor, semester} = req.body;
   const user = await User.findOne({email: email});
 
   if (!user) {
@@ -17,7 +17,8 @@ router.post('/signup', async (req, res) => {
       email,
       name,
       password: encryptedPassword,
-      description,
+      bachelor,
+      semester,
       userType: 0,
     });
 
@@ -31,9 +32,13 @@ router.post('/signup', async (req, res) => {
     // set token to user's cookies
     res.cookie('jwt', token);
 
-    return res.status(200).json({success: true, message: 'User created', user: newUser});
+    return res
+      .status(200)
+      .json({success: true, message: 'User created', user: newUser});
   } else {
-    return res.status(401).json({success: false, message: 'Oh oh! Email taken!'});
+    return res
+      .status(401)
+      .json({success: false, message: 'Oh oh! Email taken!'});
   }
 });
 
@@ -59,9 +64,15 @@ router.post('/login', async (req, res) => {
       // populate user object
       let populatedUser = await user.populateReferences();
 
-      return res.status(200).json({success: true, message: 'Login successful', user: populatedUser});
+      return res.status(200).json({
+        success: true,
+        message: 'Login successful',
+        user: populatedUser,
+      });
     } else {
-      return res.status(401).json({success: false, message: 'Password is incorrect'});
+      return res
+        .status(401)
+        .json({success: false, message: 'Password is incorrect'});
     }
   } else {
     return res.status(404).json({success: false, message: 'User not found'});
@@ -76,11 +87,17 @@ router.get('/validateToken', async (req, res) => {
   };
 
   try {
-    const {id} = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, verifyOptions);
+    const {id} = jwt.verify(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+      verifyOptions,
+    );
     const user = await User.findById(id);
     const populatedUser = await user.populateReferences();
 
-    return res.status(200).json({success: true, message: 'Valid token', user: populatedUser});
+    return res
+      .status(200)
+      .json({success: true, message: 'Valid token', user: populatedUser});
   } catch {
     return res.status(401).json({success: false, message: 'Token not valid'});
   }

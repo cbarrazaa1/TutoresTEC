@@ -22,8 +22,7 @@ BachelorSchema.methods.populateReferences = async function() {
 
   this.relatedCourses = await Promise.all(
     this.relatedCourses.map(async id => {
-      const course = await Course.findById(id);
-      return await course.populateReferences();
+      return await Course.findById(id);
     }),
   );
 

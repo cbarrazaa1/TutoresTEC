@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const AuthController = require('./controllers/AuthController');
 const BachelorController = require('./controllers/BachelorController');
 const CourseController = require('./controllers/CourseController');
+const SessionController = require('./controllers/SessionController');
+const UserController = require('./controllers/UserController');
 const cors = require('cors');
 const {Notification} = require('./models/Notification');
 const {User} = require('./models/User');
@@ -26,6 +28,8 @@ app.use(express.static(path.join(__dirname, '/../client/build')));
 app.use('/api/auth', AuthController);
 app.use('/api/bachelors', BachelorController);
 app.use('/api/courses', CourseController);
+app.use('/api/sessions', SessionController);
+app.use('/api/users', UserController);
 
 // serve react in any other endpoint
 app.get('*', (req, res) => {

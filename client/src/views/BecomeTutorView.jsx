@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Card, Form, InputGroup} from 'react-bootstrap';
+import {Button, Card, Form, InputGroup} from 'react-bootstrap';
 import CourseTokenizer from '../components/CourseTokenizer';
 import {useState, useRef} from 'react';
 import localizer from 'react-big-calendar/lib/localizers/moment';
@@ -36,10 +36,23 @@ function BecomeTutorView() {
   };
 
   const onCreateEvent = ({start, end}) => {
+    for (let date of selectedDates) {
+      if (
+        (start > date.start && start < date.end) ||
+        (date.start >= start && date.start <= end)
+      ) {
+        return;
+      }
+    }
+
     setSelectedDates(prev => prev.concat({start, end}));
   };
 
-  const onSelectEvent = () => {};
+  const onSelectEvent = ({start, end}) => {
+    setSelectedDates(prev =>
+      prev.filter(date => start !== date.start && end !== date.end),
+    );
+  };
 
   return (
     <div style={styles.root}>
@@ -89,7 +102,8 @@ function BecomeTutorView() {
           </Form>
           <hr />
           <Card.Title>Schedule</Card.Title>
-          Pick times in which you are available to offer tutoring sessions.
+          Pick times in which you are available to offer tutoring sessions. You
+          can change it later.
           <Calendar
             style={styles.calendar}
             selectable={true}
@@ -100,6 +114,12 @@ function BecomeTutorView() {
             onSelectEvent={onSelectEvent}
             views={['week']}
           />
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <br />
+            Upon clicking confirm, you'll have a tutor profile and will appear
+            in the search list!
+            <Button style={styles.confirmButton}>Confirm</Button>
+          </div>
         </Card.Body>
       </Card>
     </div>
@@ -127,8 +147,12 @@ const styles = {
     fontWeight: 500,
   },
   calendar: {
-    height: '600px',
+    height: '500px',
     marginTop: '12px',
+  },
+  confirmButton: {
+    marginTop: '8px',
+    width: '20%',
   },
 };
 

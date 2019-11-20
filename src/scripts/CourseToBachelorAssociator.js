@@ -3,6 +3,10 @@ const {Bachelor} = require('../models/Bachelor');
 const {Course} = require('../models/Course');
 require('dotenv').config({path: __dirname + '/../../.env'});
 
+if (process.argv.length < 3) {
+  console.log(`Usage: ${process.argv[0]} ${process.argv[1]} <bachelorID>`);
+}
+
 console.log('Connecting to MongoDB database...');
 mongoose.connect(process.env.MONGO_DB_URI, {
   useNewUrlParser: true,
@@ -10,12 +14,7 @@ mongoose.connect(process.env.MONGO_DB_URI, {
 });
 
 mongoose.connection.once('open', async () => {
-  console.log('Connected!');
-  if (process.argv.length < 3) {
-    console.log(`Usage: ${process.argv[0]} ${process.argv[1]} <bachelorID>`);
-  }
-
-  console.log('Running script...');
+  console.log('Connected!\n Running script...');
   const bachelorID = process.argv[2];
   const bachelor = await Bachelor.findById(bachelorID);
 
