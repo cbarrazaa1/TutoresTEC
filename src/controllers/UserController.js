@@ -71,7 +71,7 @@ router.get('/myStudents', async (req, res) => {
 
 router.get('/search', async (req, res) => {
   const {q, populated} = req.query;
-  let users = await User.find({name: {$regex: q, $options: 'i'}});
+  let users = await User.find({name: {$regex: q, $options: 'i'}, userType: 1});
 
   if (populated) {
     users = await Promise.all(
