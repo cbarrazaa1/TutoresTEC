@@ -5,7 +5,7 @@ import {FaGraduationCap} from 'react-icons/fa';
 import {IoIosRocket} from 'react-icons/io';
 import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {withRouter} from 'react-router-dom';
-import UserContext from '../context/UserContext';
+import UserContext, {useCurrentUser} from '../context/UserContext';
 import {SERVER_URL} from '../config';
 
 function SignUpView({history}) {
@@ -16,7 +16,7 @@ function SignUpView({history}) {
   const [semester, setSemester] = useState('');
   const [bachelor, setBachelor] = useState('');
   const [bachelorList, setBachelorList] = useState([]);
-  const {setUser} = useContext(UserContext);
+  const {setUser} = useCurrentUser();
 
   useEffect(() => {
     async function getBachelorList() {

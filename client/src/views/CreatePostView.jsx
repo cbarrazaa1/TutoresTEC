@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useContext, useState, useEffect} from 'react';
-import UserContext from '../context/UserContext';
+import {useCurrentUser} from '../context/UserContext';
 import {Form, Button, Card} from 'react-bootstrap';
 import {FiPlusCircle} from 'react-icons/fi';
 import {Router, Link, withRouter} from 'react-router-dom';
@@ -9,7 +9,7 @@ import {SERVER_URL} from '../config';
 function CreatePostView({history}) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const {user} = useContext(UserContext);
+  const {user} = useCurrentUser();
 
   const onTitleChange = e => {
     setTitle(e.target.value);

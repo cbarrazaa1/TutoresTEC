@@ -6,11 +6,11 @@ import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
 import {withRouter} from 'react-router-dom';
-import UserContext from '../context/UserContext';
+import {useCurrentUser} from '../context/UserContext';
 
 function SideBar({history}) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const {user} = useContext(UserContext);
+  const {user} = useCurrentUser();
 
   const isActive = index => {
     return index === activeIndex;

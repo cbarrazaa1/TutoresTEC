@@ -3,13 +3,13 @@ import {useContext, useState} from 'react';
 import {Button, Card, Form, InputGroup} from 'react-bootstrap';
 import {MdEmail, MdLock} from 'react-icons/md';
 import {Link, withRouter} from 'react-router-dom';
-import UserContext from '../context/UserContext';
+import {useCurrentUser} from '../context/UserContext';
 import {SERVER_URL} from '../config';
 
 function LoginView({history}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {setUser} = useContext(UserContext);
+  const {setUser} = useCurrentUser();
 
   const onEmailChange = e => {
     setEmail(e.target.value);

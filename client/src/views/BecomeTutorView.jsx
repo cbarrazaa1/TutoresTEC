@@ -5,7 +5,7 @@ import {useEffect, useState, useRef, useContext} from 'react';
 import localizer from 'react-big-calendar/lib/localizers/moment';
 import {Calendar, Views} from 'react-big-calendar';
 import moment from 'moment';
-import UserContext from '../context/UserContext';
+import {useCurrentUser} from '../context/UserContext';
 import {SERVER_URL} from '../config';
 
 const momentLocalizer = localizer(moment);
@@ -17,7 +17,7 @@ function BecomeTutorView() {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const courseCombobox = useRef(null);
-  const {user} = useContext(UserContext);
+  const {user} = useCurrentUser();
 
   useEffect(() => {
     async function fetchBachelors() {
