@@ -45,6 +45,8 @@ function LoginView({history}) {
     if (json.success) {
       setUser(json.user);
       history.push('/home');
+    } else {
+      alert(json.message);
     }
   };
 

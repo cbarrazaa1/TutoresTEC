@@ -31,10 +31,10 @@ function SearchView() {
   };
 
   const onInputChange = e => {
+    setQuery(e.target.value);
     if (query === '') {
       setResults([]);
     }
-    setQuery(e.target.value);
   };
 
   const onFormSubmit = async e => {
@@ -62,6 +62,12 @@ function SearchView() {
       // courses
     }
   };
+
+  let hideResuts = false;
+  hideResuts =
+    results.length === 0
+      ? selectedIndex === 0 && true
+      : query === '' && selectedIndex === 0 && true;
 
   return (
     <div style={styles.root}>
@@ -98,7 +104,9 @@ function SearchView() {
           </Form>
         </Card.Body>
       </Card>
-      <h5 style={styles.subtitle}>Top-rated Tutors</h5>
+      <h5 style={styles.subtitle}>
+        {hideResuts ? 'Top-rated Tutors' : 'Results'}
+      </h5>
       {results.length === 0
         ? selectedIndex === 0 &&
           topTutors.map(tutor => <TutorSearchRow tutor={tutor} />)
