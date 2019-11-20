@@ -28,8 +28,10 @@ function SideBar({history}) {
         history.push('/home/notifications');
         break;
       case 3:
+        history.push('/home/myTutors');
         break;
       case 4:
+        history.push('/home/myStudents');
         break;
     }
     setActiveIndex(index);
@@ -91,26 +93,26 @@ function SideBar({history}) {
           <FaInbox style={styles.icon}></FaInbox>
           Inbox
         </ListGroup.Item> */}
+        <ListGroup.Item
+          style={styles.listItem}
+          action
+          active={isActive(3)}
+          onClick={() => onOptionClick(3)}
+        >
+          <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
+          My tutors
+        </ListGroup.Item>
         {user && user.userType ? (
           <ListGroup.Item
             style={styles.listItem}
             action
-            active={isActive(3)}
-            onClick={() => onOptionClick(3)}
+            active={isActive(4)}
+            onClick={() => onOptionClick(4)}
           >
             <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
             My students
           </ListGroup.Item>
         ) : null}
-        <ListGroup.Item
-          style={styles.listItem}
-          action
-          active={isActive(4)}
-          onClick={() => onOptionClick(4)}
-        >
-          <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
-          My tutors
-        </ListGroup.Item>
         <ListGroup.Item style={styles.tutorBtnContainer}>
           <Button variant="primary" block onClick={onBecomeTutorClick}>
             Become tutor
