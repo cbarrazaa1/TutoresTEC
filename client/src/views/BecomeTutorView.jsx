@@ -1,32 +1,67 @@
 import * as React from 'react';
 import {Button, Card, Form, InputGroup} from 'react-bootstrap';
 import CourseTokenizer from '../components/CourseTokenizer';
-import {useState, useRef} from 'react';
+import {useEffect, useState, useRef, useContext} from 'react';
 import localizer from 'react-big-calendar/lib/localizers/moment';
 import {Calendar, Views} from 'react-big-calendar';
 import moment from 'moment';
+import UserContext from '../context/UserContext';
 
 const momentLocalizer = localizer(moment);
 
 function BecomeTutorView() {
-  const [courses, setCourses] = useState([
-    'TC1020: Programming Fundamentals',
-    'TC1030: Data Structures',
-    'TC1010: Software Engineering Fundamentals',
-  ]);
+  const [selectedBachelor, setSelectedBachelor] = useState({});
+  const [bachelors, setBachelors] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const courseCombobox = useRef(null);
+  const {user} = useContext(UserContext);
 
-  const onBachelorChange = () => {};
-  const onCourseChange = e => {
-    const selected = e.target.value;
-    if (selected === 'Select course...') {
-      return;
+  useEffect(() => {
+    async function fetchBachelors() {
+      let response = await fetch('http://localhost:3001/api/bachelors/all', {
+        method: 'GET',
+      });
+
+      let json = await response.json();
+      setBachelors(json.bachelors);
+      setSelectedBachelor(json.bachelors[0]);
+
+      // fetch related courses
+      const bachelorName = json.bachelors[0].name;
+      response = await fetch(
+        `http://localhost:3001/api/courses/all?bachelor=${bachelorName}`,
+        {
+          method: 'GET',
+        },
+      );
+      json = await response.json();
+      setCourses(json.courses);
     }
 
-    setCourses(prev => prev.filter(course => course !== selected));
-    setSelectedCourses(prev => prev.concat(selected));
+    fetchBachelors();
+  }, []);
+
+  const onSelectBachelor = async bachelor => {
+    setSelectedBachelor(bachelor);
+    const response = await fetch(
+      `http://localhost:3001/api/courses/all?bachelor=${bachelor.name}`,
+      {
+        method: 'GET',
+      },
+    );
+    const json = await response.json();
+    setCourses(json.courses);
+  };
+
+  const onSelectCourse = e => {
+    const selectedCourse = courses[e.target.value];
+    console.log(selectedCourse);
+    setCourses(prev =>
+      prev.filter(course => course._id !== selectedCourse._id),
+    );
+    setSelectedCourses(prev => prev.concat(selectedCourse));
     courseCombobox.current.value = 'Select course...';
   };
 
@@ -45,13 +80,35 @@ function BecomeTutorView() {
       }
     }
 
-    setSelectedDates(prev => prev.concat({start, end}));
+    setSelectedDates(prev =>
+      prev.concat({start, end, tutor: user._id, student: null, status: 'open'}),
+    );
   };
 
   const onSelectEvent = ({start, end}) => {
     setSelectedDates(prev =>
       prev.filter(date => start !== date.start && end !== date.end),
     );
+  };
+
+  const onConfirmClick = async () => {
+    const response = await fetch(
+      'http://localhost:3001/api/users/becometutor',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userID: user._id,
+          courseIDs: selectedCourses.map(course => course._id),
+          sessions: selectedDates,
+        }),
+      },
+    );
+
+    const json = await response.json();
+    console.log(json);
   };
 
   return (
@@ -77,9 +134,14 @@ function BecomeTutorView() {
               <Form.Control
                 style={styles.combobox}
                 as="select"
-                onChange={onBachelorChange}
+                onChange={onSelectBachelor}
               >
-                <option>Ingeniería en Tecnologías Computacionales (ITC)</option>
+                {bachelors.map((bachelor, i) => (
+                  <option
+                    key={bachelor._id}
+                    value={i}
+                  >{`${bachelor.name} (${bachelor.shortName})`}</option>
+                ))}
               </Form.Control>
             </Form.Group>
             <Form.Group>
@@ -87,11 +149,13 @@ function BecomeTutorView() {
                 ref={courseCombobox}
                 style={styles.combobox}
                 as="select"
-                onChange={onCourseChange}
+                onChange={onSelectCourse}
               >
                 <option>Select course...</option>
-                {courses.map(course => (
-                  <option>{course}</option>
+                {courses.map((course, i) => (
+                  <option key={course._id} value={i}>
+                    {course.code}: {course.name}
+                  </option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -118,7 +182,9 @@ function BecomeTutorView() {
             <br />
             Upon clicking confirm, you'll have a tutor profile and will appear
             in the search list!
-            <Button style={styles.confirmButton}>Confirm</Button>
+            <Button style={styles.confirmButton} onClick={onConfirmClick}>
+              Confirm
+            </Button>
           </div>
         </Card.Body>
       </Card>

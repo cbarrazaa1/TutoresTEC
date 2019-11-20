@@ -12,7 +12,8 @@ function CourseTokenizer({tokens, onDeletePress}) {
             ? 'No selected courses'
             : tokens.map(token => (
                 <CourseToken
-                  text={token}
+                  key={token._id}
+                  text={token.name}
                   allowDelete={true}
                   onDeletePress={() => onDeletePress(token)}
                 />

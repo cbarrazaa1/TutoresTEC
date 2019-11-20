@@ -12,10 +12,13 @@ function MainRouter() {
 
   useEffect(() => {
     async function checkToken() {
-      const response = await fetch('http://localhost:3001/api/auth/validateToken', {
-        method: 'GET',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        'http://localhost:3001/api/auth/validateToken',
+        {
+          method: 'GET',
+          credentials: 'include',
+        },
+      );
       const json = await response.json();
       setIsValidToken(json.success);
       setUser(json.user);

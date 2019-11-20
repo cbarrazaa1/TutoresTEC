@@ -18,26 +18,31 @@ router.get('/all', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-  const {start, end, tutor} = req.body;
+  let {sessions} = req.body;
 
-  // all are required
-  if (start == null || end == null || tutor == null) {
+  if (sessions == null) {
     return res.status(401).json({
       success: false,
       message: 'Missing required fields from body.',
     });
   }
 
-  const session = await Session.create({
-    start,
-    end,
-    tutor,
-    student: null,
-    status: 'open',
-  });
+  sessions = await Promise.all(
+    sessions.map(async session => {
+      const {start, end, tutor} = session;
+      return await Session.create({
+        start,
+        end,
+        tutor,
+        student: null,
+        status: 'open',
+      });
+    }),
+  );
+
   return res.status(200).json({
     success: true,
-    session,
+    sessions,
   });
 });
 
