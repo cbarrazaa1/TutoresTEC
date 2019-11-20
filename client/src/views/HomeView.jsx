@@ -1,11 +1,34 @@
 import * as React from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {Route, Switch, withRouter} from 'react-router-dom';
+import {FiPlusCircle} from 'react-icons/fi';
+import {Button} from 'react-bootstrap';
 import Post from '../components/Post';
 import SideBar from '../components/SideBar';
 import NotificationsView from './NotificationsView';
 import BecomeTutorView from './BecomeTutorView';
+import CreatePostView from './CreatePostView';
 
-function HomeView() {
+function HomeView({history}) {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const url = 'http://localhost:3001/api/posts/all?populated=true';
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+      const json = await response.json();
+      setPosts(json.posts);
+    }
+    fetchPosts();
+  }, []);
+
+  const onCreatePostClick = e => {
+    e.preventDefault();
+    history.push('/home/createPost');
+  };
+
   return (
     <div style={styles.root}>
       <SideBar />
@@ -14,11 +37,22 @@ function HomeView() {
           <Route exact path="/home">
             <div style={styles.container}>
               <h3 style={styles.title}>Latest Posts</h3>
-              <Post
-                title="This is a post"
-                author="tutor"
-                description="aodfiajsdiofaenfnaeoif aifjadnf aeifae i"
-              />
+              <div style={styles.options}>
+                <Button variant="success" onClick={onCreatePostClick}>
+                  <FiPlusCircle></FiPlusCircle> Create Post
+                </Button>
+              </div>
+
+              {posts.map(post => {
+                return (
+                  <Post
+                    key={post._id}
+                    title={post.title}
+                    author={post.author.name}
+                    description={post.content}
+                  />
+                );
+              })}
             </div>
           </Route>
           <Route exact path="/home/notifications">
@@ -26,6 +60,9 @@ function HomeView() {
           </Route>
           <Route exact path="/home/becometutor">
             <BecomeTutorView />
+          </Route>
+          <Route exact path="/home/createPost">
+            <CreatePostView />
           </Route>
         </Switch>
       </div>
@@ -49,6 +86,9 @@ const styles = {
     flex: 1,
     padding: '10px',
   },
+  options: {
+    marginBottom: '10px',
+  },
 };
 
-export default HomeView;
+export default withRouter(HomeView);

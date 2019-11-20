@@ -5,22 +5,25 @@ const router = express.Router();
 
 router.get('/all', async (req, res) => {
   const populated = req.query.populated;
-  let posts = await Post.find();
+  let posts = await Post.find().sort({postedTime: -1});
 
   if (populated) {
-    posts = posts.map(async post => {
-      return await post.populateReferences();
-    });
+    posts = await Promise.all(
+      posts.map(async post => {
+        return await post.populateReferences();
+      }),
+    );
   }
-  return res.status.json({
+
+  return res.status(200).json({
     success: true,
     posts,
   });
 });
 
 router.post('/create', async (req, res) => {
-  const {postedTime, author, title, content} = req.body;
-
+  const {author, title, content} = req.body;
+  const postedTime = Date.now();
   // all are required
   if (!postedTime || !author || !title || !content) {
     return res.status(401).json({
