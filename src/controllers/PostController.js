@@ -14,7 +14,6 @@ router.get('/all', async (req, res) => {
       }),
     );
   }
-  console.log(populated);
   return res.status(200).json({
     success: true,
     posts,
