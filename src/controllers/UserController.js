@@ -17,7 +17,7 @@ router.post('/becometutor', async (req, res) => {
 
   const user = await User.findById(userID);
   user.userType = 1; // tutor
-  user.courses.push(courseIDs);
+  courseIDs.forEach(id => user.courses.push(id));
 
   // create sessions
   for (let session of sessions) {
@@ -29,7 +29,7 @@ router.post('/becometutor', async (req, res) => {
   await user.save();
   return res
     .status(200)
-    .json({success: true, message: 'User has been changed into a tutor'});
+    .json({success: true, message: 'User has been changed into a tutor.'});
 });
 
 module.exports = router;
