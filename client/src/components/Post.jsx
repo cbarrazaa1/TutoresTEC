@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 
 function Post({title, author, description}) {
   return (
-    <Card>
+    <Card style={{marginBottom: '10px'}}>
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Subtitle style={styles.card}>

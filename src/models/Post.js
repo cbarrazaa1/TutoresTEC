@@ -22,8 +22,7 @@ const PostSchema = new mongoose.Schema({
 
 PostSchema.methods.populateReferences = async function() {
   const User = mongoose.model('user');
-  this.receiver = await User.findById(this.receiver);
-  this.triggeredBy = await User.findById(this.triggeredBy);
+  this.author = await User.findById(this.author);
 
   return this;
 };
