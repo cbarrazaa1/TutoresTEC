@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {Button, Card, Col, Form, InputGroup} from 'react-bootstrap';
 import {FaGraduationCap} from 'react-icons/fa';
 import {IoIosRocket} from 'react-icons/io';
@@ -14,7 +14,21 @@ function SignUpView({history}) {
   const [confirmedPassword, setConfirmedPassword] = useState('');
   const [semester, setSemester] = useState('');
   const [bachelor, setBachelor] = useState('');
+  const [bachelorList, setBachelorList] = useState([]);
   const {setUser} = useContext(UserContext);
+
+  useEffect(() => {
+    async function getBachelorList() {
+      const response = await fetch('http://localhost:3001/api/bachelors/all', {
+        method: 'GET',
+      });
+
+      const json = await response.json();
+      setBachelorList(json.bachelors);
+      setBachelor(json.bachelors[0]._id);
+    }
+    getBachelorList();
+  }, []);
 
   const onEmailChange = e => {
     setEmail(e.target.value);
@@ -37,6 +51,7 @@ function SignUpView({history}) {
   };
 
   const onBachelorChange = e => {
+    console.log(e.target.value);
     setBachelor(e.target.value);
   };
 
@@ -70,10 +85,8 @@ function SignUpView({history}) {
         email,
         password,
         name,
-        description: {
-          semester,
-          bachelor,
-        },
+        semester,
+        bachelor,
       }),
     });
     const json = await response.json();
@@ -101,7 +114,11 @@ function SignUpView({history}) {
                   <MdEmail />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control placeholder="Email" type="email" onChange={onEmailChange} />
+              <Form.Control
+                placeholder="Email"
+                type="email"
+                onChange={onEmailChange}
+              />
             </InputGroup>
           </Form.Group>
 
@@ -112,7 +129,11 @@ function SignUpView({history}) {
                   <MdPerson />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control placeholder="Name" type="text" onChange={onNameChange} />
+              <Form.Control
+                placeholder="Name"
+                type="text"
+                onChange={onNameChange}
+              />
             </InputGroup>
           </Form.Group>
 
@@ -124,12 +145,20 @@ function SignUpView({history}) {
                     <MdLock />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control placeholder="Password" type="password" onChange={onPasswordChange} />
+                <Form.Control
+                  placeholder="Password"
+                  type="password"
+                  onChange={onPasswordChange}
+                />
               </InputGroup>
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Form.Control placeholder="Confirm password" type="password" onChange={onConfirmedPasswordChange} />
+              <Form.Control
+                placeholder="Confirm password"
+                type="password"
+                onChange={onConfirmedPasswordChange}
+              />
             </Form.Group>
           </Form.Row>
 
@@ -142,7 +171,11 @@ function SignUpView({history}) {
                     <FaGraduationCap />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control placeholder="Bachelor" type="text" onChange={onBachelorChange} />
+                <Form.Control as="select" onChange={onBachelorChange}>
+                  {bachelorList.map(bachelor => (
+                    <option>{bachelor.shortName}</option>
+                  ))}
+                </Form.Control>
               </InputGroup>
             </Form.Group>
 
@@ -153,7 +186,12 @@ function SignUpView({history}) {
                     <IoIosRocket />
                   </InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control placeholder="Semester" type="number" onChange={onSemesterChange} min={0} />
+                <Form.Control
+                  placeholder="Semester"
+                  type="number"
+                  onChange={onSemesterChange}
+                  min={0}
+                />
               </InputGroup>
             </Form.Group>
           </Form.Row>

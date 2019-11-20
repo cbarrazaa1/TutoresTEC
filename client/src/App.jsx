@@ -10,8 +10,8 @@ function App() {
   const [navbar, {height}] = useDimensions();
 
   return (
-    <div style={{height: `calc(100% - ${height}px)`}}>
-      <Navbar ref={navbar} bg="primary" variant="dark">
+    <div style={{height: `calc(100% - ${height}px)`, paddingTop: height}}>
+      <Navbar ref={navbar} bg="primary" variant="dark" fixed="top">
         <Navbar.Brand>TutoresTEC</Navbar.Brand>
       </Navbar>
       <BrowserRouter>
