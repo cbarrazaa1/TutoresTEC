@@ -22,6 +22,7 @@ function SideBar({history}) {
         history.push('/home');
         break;
       case 1:
+        history.push('/home/search');
         break;
       case 2:
         history.push('/home/notifications');

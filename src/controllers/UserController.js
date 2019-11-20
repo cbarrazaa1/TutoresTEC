@@ -4,6 +4,34 @@ const {Session} = require('../models/Session');
 
 const router = express.Router();
 
+router.get('/toprated', async (req, res) => {
+  const {populated} = req.query;
+  let users = await User.find({userType: 1})
+    .sort({rating: -1})
+    .limit(5);
+
+  if (populated) {
+    users = await Promise.all(
+      users.map(async user => await user.populateReferences()),
+    );
+  }
+
+  return res.status(200).json({success: true, users});
+});
+
+router.get('/search', async (req, res) => {
+  const {q, populated} = req.query;
+  let users = await User.find({name: {$regex: q, $options: 'i'}});
+
+  if (populated) {
+    users = await Promise.all(
+      users.map(async user => await user.populateReferences()),
+    );
+  }
+
+  return res.status(200).json({success: true, users});
+});
+
 router.post('/becometutor', async (req, res) => {
   const {userID, courseIDs, sessions} = req.body;
 
@@ -17,7 +45,7 @@ router.post('/becometutor', async (req, res) => {
 
   const user = await User.findById(userID);
   user.userType = 1; // tutor
-  user.courses.push(courseIDs);
+  courseIDs.forEach(id => user.courses.push(id));
 
   // create sessions
   for (let session of sessions) {
@@ -29,7 +57,7 @@ router.post('/becometutor', async (req, res) => {
   await user.save();
   return res
     .status(200)
-    .json({success: true, message: 'User has been changed into a tutor'});
+    .json({success: true, message: 'User has been changed into a tutor.'});
 });
 
 module.exports = router;

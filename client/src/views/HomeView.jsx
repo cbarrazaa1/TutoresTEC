@@ -8,6 +8,7 @@ import SideBar from '../components/SideBar';
 import NotificationsView from './NotificationsView';
 import BecomeTutorView from './BecomeTutorView';
 import CreatePostView from './CreatePostView';
+import SearchView from './SearchView';
 
 function HomeView({history}) {
   const [posts, setPosts] = useState([]);
@@ -63,6 +64,9 @@ function HomeView({history}) {
           </Route>
           <Route exact path="/home/createPost">
             <CreatePostView />
+          </Route>
+          <Route exact path="/home/search">
+            <SearchView />
           </Route>
         </Switch>
       </div>
