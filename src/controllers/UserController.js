@@ -4,6 +4,34 @@ const {Session} = require('../models/Session');
 
 const router = express.Router();
 
+router.get('/toprated', async (req, res) => {
+  const {populated} = req.query;
+  let users = await User.find({userType: 1})
+    .sort({rating: -1})
+    .limit(5);
+
+  if (populated) {
+    users = await Promise.all(
+      users.map(async user => await user.populateReferences()),
+    );
+  }
+
+  return res.status(200).json({success: true, users});
+});
+
+router.get('/search', async (req, res) => {
+  const {q, populated} = req.query;
+  let users = await User.find({name: {$regex: q, $options: 'i'}});
+
+  if (populated) {
+    users = await Promise.all(
+      users.map(async user => await user.populateReferences()),
+    );
+  }
+
+  return res.status(200).json({success: true, users});
+});
+
 router.post('/becometutor', async (req, res) => {
   const {userID, courseIDs, sessions} = req.body;
 

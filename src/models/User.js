@@ -29,6 +29,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  rating: {
+    type: Number,
+    required: false,
+  },
+  ratingCount: {
+    type: Number,
+    required: false,
+  },
   notifications: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -51,6 +59,9 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.methods.populateReferences = async function() {
   const Notification = mongoose.model('notification');
+  const Course = mongoose.model('course');
+  const Session = mongoose.model('session');
+  const Bachelor = mongoose.model('bachelor');
 
   this.notifications = await Promise.all(
     this.notifications.map(async id => {
@@ -59,6 +70,19 @@ UserSchema.methods.populateReferences = async function() {
     }),
   );
 
+  this.courses = await Promise.all(
+    this.courses.map(async id => {
+      return await Course.findById(id);
+    }),
+  );
+
+  this.sessions = await Promise.all(
+    this.sessions.map(async id => {
+      return await Session.findById(id);
+    }),
+  );
+
+  this.bachelor = await Bachelor.findById(this.bachelor);
   return this;
 };
 
