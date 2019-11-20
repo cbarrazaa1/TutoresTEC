@@ -4,6 +4,7 @@ import Post from '../components/Post';
 import SideBar from '../components/SideBar';
 import NotificationsView from './NotificationsView';
 import BecomeTutorView from './BecomeTutorView';
+import SearchView from './SearchView';
 
 function HomeView() {
   return (
@@ -26,6 +27,9 @@ function HomeView() {
           </Route>
           <Route exact path="/home/becometutor">
             <BecomeTutorView />
+          </Route>
+          <Route exact path="/home/search">
+            <SearchView />
           </Route>
         </Switch>
       </div>
