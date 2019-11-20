@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {Notification} = require('./Notification');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -18,19 +17,17 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  description: {
-    semester: {
-      type: Number,
-      required: true,
-    },
-    bachelor: {
-      type: String,
-      required: true,
-    },
-    additionalInfo: {
-      type: String,
-      required: false,
-    },
+  bachelor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'bachelor',
+  },
+  semester: {
+    type: Number,
+    required: true,
+  },
+  additionalInfo: {
+    type: String,
+    required: false,
   },
   notifications: [
     {
@@ -38,19 +35,27 @@ const UserSchema = new mongoose.Schema({
       ref: 'notification',
     },
   ],
+  courses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'course',
+    },
+  ],
+  sessions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'session',
+    },
+  ],
 });
 
 UserSchema.methods.populateReferences = async function() {
+  const Notification = mongoose.model('notification');
+
   this.notifications = await Promise.all(
     this.notifications.map(async id => {
       const notification = await Notification.findById(id);
-      notification.receiver = await User.findById(notification.receiver);
-
-      if (notification.triggeredBy != null) {
-        notification.triggeredBy = await User.findById(notification.triggeredBy);
-      }
-
-      return notification;
+      return await notification.populateReferences();
     }),
   );
 

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {UserSchema} = require('./User');
 
 const NotificationSchema = new mongoose.Schema({
   type: {
@@ -29,6 +28,14 @@ const NotificationSchema = new mongoose.Schema({
     required: false,
   },
 });
+
+NotificationSchema.methods.populateReferences = async function() {
+  const User = mongoose.model('user');
+  this.receiver = await User.findById(this.receiver);
+  this.triggeredBy = await User.findById(this.triggeredBy);
+
+  return this;
+};
 
 const Notification = mongoose.model('notification', NotificationSchema);
 

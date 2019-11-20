@@ -3,22 +3,32 @@ import {Route, Switch} from 'react-router-dom';
 import Post from '../components/Post';
 import SideBar from '../components/SideBar';
 import NotificationsView from './NotificationsView';
+import BecomeTutorView from './BecomeTutorView';
 
 function HomeView() {
   return (
     <div style={styles.root}>
       <SideBar />
-      <Switch>
-        <Route exact path="/home">
-          <div style={styles.container}>
-            <h3 style={styles.title}>Latest Posts</h3>
-            <Post title="This is a post" author="tutor" description="aodfiajsdiofaenfnaeoif aifjadnf aeifae i" />
-          </div>
-        </Route>
-        <Route exact path="/home/notifications">
-          <NotificationsView />
-        </Route>
-      </Switch>
+      <div style={{paddingLeft: 350, flex: 1}}>
+        <Switch>
+          <Route exact path="/home">
+            <div style={styles.container}>
+              <h3 style={styles.title}>Latest Posts</h3>
+              <Post
+                title="This is a post"
+                author="tutor"
+                description="aodfiajsdiofaenfnaeoif aifjadnf aeifae i"
+              />
+            </div>
+          </Route>
+          <Route exact path="/home/notifications">
+            <NotificationsView />
+          </Route>
+          <Route exact path="/home/becometutor">
+            <BecomeTutorView />
+          </Route>
+        </Switch>
+      </div>
     </div>
   );
 }

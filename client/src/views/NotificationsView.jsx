@@ -6,7 +6,11 @@ function NotificationsView() {
     <div style={styles.root}>
       <h3 style={styles.title}>Notifications</h3>
       <div style={styles.container}>
-        <Notification text="You received a message from @isabelcruz!" time="3 days ago" hasBottomBorder={false} />
+        <Notification
+          text="You received a message from @isabelcruz!"
+          time="3 days ago"
+          hasBottomBorder={false}
+        />
         <Notification
           text="@isabelcruz scheduled a tutoring session with you."
           time="4 days ago"
@@ -23,6 +27,7 @@ const styles = {
     flex: 1,
     padding: '10px',
     flexDirection: 'column',
+    width: '100%',
   },
   title: {
     fontWeight: 200,
