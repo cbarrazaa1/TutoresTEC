@@ -43,7 +43,6 @@ function CreatePostView({history}) {
       alert('Post created successfully');
       history.replace('/home');
     }
-    console.log(json.post);
   };
   return (
     <div style={styles.root}>
