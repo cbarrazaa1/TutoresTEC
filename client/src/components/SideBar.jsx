@@ -82,7 +82,7 @@ function SideBar({history}) {
           <IoIosNotifications style={styles.icon}></IoIosNotifications>
           Notifications
         </ListGroup.Item>
-        <ListGroup.Item
+        {/* <ListGroup.Item
           style={styles.listItem}
           action
           active={isActive(3)}
@@ -90,6 +90,15 @@ function SideBar({history}) {
         >
           <FaInbox style={styles.icon}></FaInbox>
           Inbox
+        </ListGroup.Item> */}
+        <ListGroup.Item
+          style={styles.listItem}
+          action
+          active={isActive(3)}
+          onClick={() => onOptionClick(3)}
+        >
+          <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
+          My students{' '}
         </ListGroup.Item>
         <ListGroup.Item
           style={styles.listItem}
