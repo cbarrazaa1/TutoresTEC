@@ -4,6 +4,7 @@ import {Button, Card, Form, InputGroup} from 'react-bootstrap';
 import {MdEmail, MdLock} from 'react-icons/md';
 import {Link, withRouter} from 'react-router-dom';
 import UserContext from '../context/UserContext';
+import {SERVER_URL} from '../config';
 
 function LoginView({history}) {
   const [email, setEmail] = useState('');
@@ -31,7 +32,7 @@ function LoginView({history}) {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/api/auth/login', {
+    const response = await fetch(`${SERVER_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +64,11 @@ function LoginView({history}) {
                   <MdEmail />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control placeholder="Email" type="email" onChange={onEmailChange} />
+              <Form.Control
+                placeholder="Email"
+                type="email"
+                onChange={onEmailChange}
+              />
             </InputGroup>
           </Form.Group>
 
@@ -74,7 +79,11 @@ function LoginView({history}) {
                   <MdLock />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control placeholder="Password" type="password" onChange={onPasswordChange} />
+              <Form.Control
+                placeholder="Password"
+                type="password"
+                onChange={onPasswordChange}
+              />
             </InputGroup>
           </Form.Group>
 

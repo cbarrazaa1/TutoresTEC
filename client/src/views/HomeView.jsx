@@ -9,13 +9,14 @@ import NotificationsView from './NotificationsView';
 import BecomeTutorView from './BecomeTutorView';
 import CreatePostView from './CreatePostView';
 import SearchView from './SearchView';
+import {SERVER_URL} from '../config';
 
 function HomeView({history}) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     async function fetchPosts() {
-      const url = 'http://localhost:3001/api/posts/all?populated=true';
+      const url = `${SERVER_URL}/api/posts/all?populated=true`;
       const response = await fetch(url, {
         method: 'GET',
       });

@@ -4,6 +4,7 @@ import UserContext from '../context/UserContext';
 import {Form, Button, Card} from 'react-bootstrap';
 import {FiPlusCircle} from 'react-icons/fi';
 import {Router, Link, withRouter} from 'react-router-dom';
+import {SERVER_URL} from '../config';
 
 function CreatePostView({history}) {
   const [title, setTitle] = useState('');
@@ -25,7 +26,7 @@ function CreatePostView({history}) {
       alert('Please fill in all requested information');
       return;
     }
-    const url = 'http://localhost:3001/api/posts/create';
+    const url = `${SERVER_URL}/api/posts/create`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {

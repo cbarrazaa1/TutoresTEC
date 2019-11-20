@@ -6,6 +6,7 @@ import {IoIosRocket} from 'react-icons/io';
 import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {withRouter} from 'react-router-dom';
 import UserContext from '../context/UserContext';
+import {SERVER_URL} from '../config';
 
 function SignUpView({history}) {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ function SignUpView({history}) {
 
   useEffect(() => {
     async function getBachelorList() {
-      const response = await fetch('http://localhost:3001/api/bachelors/all', {
+      const response = await fetch(`${SERVER_URL}/api/bachelors/all`, {
         method: 'GET',
       });
 
@@ -75,7 +76,7 @@ function SignUpView({history}) {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/api/auth/signup', {
+    const response = await fetch(`${SERVER_URL}/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

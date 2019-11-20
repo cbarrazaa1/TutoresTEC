@@ -5,6 +5,7 @@ import UserContext from './context/UserContext';
 import HomeView from './views/HomeView';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
+import {SERVER_URL} from './config';
 
 function MainRouter() {
   const [isValidToken, setIsValidToken] = useState(false);
@@ -12,13 +13,10 @@ function MainRouter() {
 
   useEffect(() => {
     async function checkToken() {
-      const response = await fetch(
-        'http://localhost:3001/api/auth/validateToken',
-        {
-          method: 'GET',
-          credentials: 'include',
-        },
-      );
+      const response = await fetch(`${SERVER_URL}/api/auth/validateToken`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       const json = await response.json();
       setIsValidToken(json.success);
       setUser(json.user);

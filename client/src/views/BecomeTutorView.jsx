@@ -6,6 +6,7 @@ import localizer from 'react-big-calendar/lib/localizers/moment';
 import {Calendar, Views} from 'react-big-calendar';
 import moment from 'moment';
 import UserContext from '../context/UserContext';
+import {SERVER_URL} from '../config';
 
 const momentLocalizer = localizer(moment);
 
@@ -20,7 +21,7 @@ function BecomeTutorView() {
 
   useEffect(() => {
     async function fetchBachelors() {
-      let response = await fetch('http://localhost:3001/api/bachelors/all', {
+      let response = await fetch(`${SERVER_URL}/api/bachelors/all`, {
         method: 'GET',
       });
 
@@ -31,7 +32,7 @@ function BecomeTutorView() {
       // fetch related courses
       const bachelorName = json.bachelors[0].name;
       response = await fetch(
-        `http://localhost:3001/api/courses/all?bachelor=${bachelorName}`,
+        `${SERVER_URL}/api/courses/all?bachelor=${bachelorName}`,
         {
           method: 'GET',
         },
@@ -46,7 +47,7 @@ function BecomeTutorView() {
   const onSelectBachelor = async bachelor => {
     setSelectedBachelor(bachelor);
     const response = await fetch(
-      `http://localhost:3001/api/courses/all?bachelor=${bachelor.name}`,
+      `${SERVER_URL}/api/courses/all?bachelor=${bachelor.name}`,
       {
         method: 'GET',
       },
@@ -92,20 +93,17 @@ function BecomeTutorView() {
   };
 
   const onConfirmClick = async () => {
-    const response = await fetch(
-      'http://localhost:3001/api/users/becometutor',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userID: user._id,
-          courseIDs: selectedCourses.map(course => course._id),
-          sessions: selectedDates,
-        }),
+    const response = await fetch(`${SERVER_URL}/api/users/becometutor`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        userID: user._id,
+        courseIDs: selectedCourses.map(course => course._id),
+        sessions: selectedDates,
+      }),
+    });
 
     const json = await response.json();
     console.log(json);

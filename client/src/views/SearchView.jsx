@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Card, Nav, Form, Button} from 'react-bootstrap';
 import {useState, useEffect} from 'react';
 import TutorSearchRow from '../components/TutorSearchRow';
+import {SERVER_URL} from '../config';
 
 function SearchView() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -12,7 +13,7 @@ function SearchView() {
   useEffect(() => {
     async function fetchTopTutors() {
       const response = await fetch(
-        'http://localhost:3001/api/users/toprated?populated=true',
+        `${SERVER_URL}/api/users/toprated?populated=true`,
         {
           method: 'GET',
         },
@@ -43,7 +44,7 @@ function SearchView() {
     }
 
     const response = await fetch(
-      `http://localhost:3001/api/users/search?q=${query}&populated=true`,
+      `${SERVER_URL}/api/users/search?q=${query}&populated=true`,
       {
         method: 'GET',
       },
