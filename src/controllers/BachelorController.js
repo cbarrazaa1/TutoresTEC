@@ -10,7 +10,7 @@ router.get('/all', async (req, res) => {
 
   if (populated) {
     bachelors = bachelors.map(async bachelor => {
-      return bachelor.populateReferences();
+      return await bachelor.populateReferences();
     });
   }
 
@@ -50,7 +50,11 @@ router.put('/edit/:id', async (req, res) => {
     });
   }
 
-  const bachelor = await Bachelor.findByIdAndUpdate(id, {name, shortName, relatedCourses}, {new: true});
+  const bachelor = await Bachelor.findByIdAndUpdate(
+    id,
+    {name, shortName, relatedCourses},
+    {new: true},
+  );
 
   // update courses with this bachelor
   relatedCourses.forEach(async id => {
