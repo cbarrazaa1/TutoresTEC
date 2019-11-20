@@ -1,28 +1,14 @@
 import * as React from 'react';
 import {useContext, useEffect, useState} from 'react';
-import {Redirect, Route, Switch} from 'react-router-dom';
-import UserContext from './context/UserContext';
+import {Redirect, Route, Switch, withRouter} from 'react-router-dom';
+import UserContext, {useCurrentUser} from './context/UserContext';
 import HomeView from './views/HomeView';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
 import {SERVER_URL} from './config';
 
-function MainRouter() {
-  const [isValidToken, setIsValidToken] = useState(false);
-  const {setUser} = useContext(UserContext);
-
-  useEffect(() => {
-    async function checkToken() {
-      const response = await fetch(`${SERVER_URL}/api/auth/validateToken`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      const json = await response.json();
-      setIsValidToken(json.success);
-      setUser(json.user);
-    }
-    checkToken();
-  }, []);
+function MainRouter({history}) {
+  const {isValidToken} = useCurrentUser(history);
 
   return (
     <Switch>
@@ -39,4 +25,4 @@ function MainRouter() {
   );
 }
 
-export default MainRouter;
+export default withRouter(MainRouter);
