@@ -122,11 +122,43 @@ router.post('/becometutor', async (req, res) => {
     user.sessions.push(createdSession._id);
   }
 
+  let tutor = await user.populateReferences();
   // save changes
   await user.save();
-  return res
-    .status(200)
-    .json({success: true, message: 'User has been changed into a tutor.'});
+  return res.status(200).json({success: true, message: tutor});
+});
+
+router.post('/sawnotifications', async (req, res) => {
+  const {id} = req.body;
+  const user = await User.findById(id);
+  user.hasNewNotifications = false;
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: 'Notifications seen',
+  });
+});
+
+router.post('/createSession', async (req, res) => {
+  const {id, session} = req.body;
+  const user = await User.findById(id);
+  delete session.title;
+  const createdSession = await Session.create(session);
+  user.sessions.push(createdSession._id);
+  await user.save();
+
+  return res.status(200).json({success: true, message: 'Session created'});
+});
+
+router.delete('/deleteSession', async (req, res) => {
+  const {id, sessionID} = req.body;
+  const user = await User.findById(id);
+  user.sessions = user.sessions.filter(id => !id.equals(sessionID));
+  await user.save();
+  await Session.findByIdAndDelete(sessionID);
+
+  return res.status(200).json({success: true, message: 'Session deleted'});
 });
 
 module.exports = router;

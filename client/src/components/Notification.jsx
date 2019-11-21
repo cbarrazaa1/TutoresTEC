@@ -2,9 +2,14 @@ import * as React from 'react';
 
 function Notification({text, hasBottomBorder, time}) {
   return (
-    <div style={{...styles.root, borderBottom: hasBottomBorder ? '0.5px #dbdbdb solid' : 'none'}}>
+    <div
+      style={{
+        ...styles.root,
+        borderBottom: hasBottomBorder ? '0.5px #dbdbdb solid' : 'none',
+      }}
+    >
       <p style={styles.text}>{text}</p>
-      <p style={styles.time}>{time}</p>
+      <p style={styles.time}>{new Date(time).toLocaleString()}</p>
     </div>
   );
 }

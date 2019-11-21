@@ -37,6 +37,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  hasNewNotifications: {
+    type: Boolean,
+    required: false,
+  },
   notifications: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,12 +1,13 @@
 import Cookies from 'js-cookie';
 import * as React from 'react';
 import {useContext, useState, useEffect} from 'react';
-import {Button, Image, ListGroup} from 'react-bootstrap';
+import {Badge, Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
 import {withRouter, useHistory, useLocation, Link} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
+import {SERVER_URL} from '../config';
 
 function SideBar() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -38,7 +39,7 @@ function SideBar() {
     return index === activeIndex;
   };
 
-  const onOptionClick = index => {
+  const onOptionClick = async index => {
     switch (index) {
       case 0:
         history.push('/home');
@@ -48,6 +49,16 @@ function SideBar() {
         break;
       case 2:
         history.push('/home/notifications');
+        const response = await fetch(
+          `${SERVER_URL}/api/users/sawnotifications`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({id: user._id}),
+          },
+        );
         break;
       case 3:
         history.push('/home/myTutors');
@@ -108,7 +119,12 @@ function SideBar() {
           onClick={() => onOptionClick(2)}
         >
           <IoIosNotifications style={styles.icon}></IoIosNotifications>
-          Notifications
+          Notifications{' '}
+          {user && user.hasNewNotifications && (
+            <Badge style={{marginLeft: '8px'}} variant="success">
+              New
+            </Badge>
+          )}
         </ListGroup.Item>
         {/* <ListGroup.Item
           style={styles.listItem}

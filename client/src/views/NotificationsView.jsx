@@ -1,21 +1,33 @@
 import * as React from 'react';
 import Notification from '../components/Notification';
+import {useCurrentUser} from '../context/UserContext';
+import {withRouter} from 'react-router-dom';
+import {useState, useEffect} from 'react';
 
 function NotificationsView() {
+  const {user} = useCurrentUser();
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    if (user != null) {
+      setNotifications(user.notifications);
+    }
+  }, [user]);
+
   return (
     <div style={styles.root}>
       <h3 style={styles.title}>Notifications</h3>
       <div style={styles.container}>
-        <Notification
-          text="You received a message from @isabelcruz!"
-          time="3 days ago"
-          hasBottomBorder={false}
-        />
-        <Notification
-          text="@isabelcruz scheduled a tutoring session with you."
-          time="4 days ago"
-          hasBottomBorder={true}
-        />
+        {notifications.map((notification, i) => {
+          return (
+            <Notification
+              key={notification._id}
+              text={notification.message}
+              time={notification.receivedTime}
+              hasBottomBorder={i === notifications.length - 1}
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -38,4 +50,4 @@ const styles = {
   },
 };
 
-export default NotificationsView;
+export default withRouter(NotificationsView);

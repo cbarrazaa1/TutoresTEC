@@ -237,6 +237,8 @@ function BecomeTutorView() {
             onSelectSlot={onCreateEvent}
             onSelectEvent={onSelectEvent}
             views={['week']}
+            min={new Date(2017, 10, 0, 8, 0, 0)}
+            max={new Date(2017, 10, 0, 23, 0, 0)}
           />
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <br />

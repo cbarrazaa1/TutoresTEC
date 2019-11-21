@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {Card} from 'react-bootstrap';
+import {Button, Form, Card, Modal} from 'react-bootstrap';
 import {useLocation, withRouter} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 import CourseTokenizer from '../components/CourseTokenizer';
 import moment from 'moment';
 import {Calendar, Views} from 'react-big-calendar';
 import localizer from 'react-big-calendar/lib/localizers/moment';
+import {SERVER_URL} from '../config';
 
 const momentLocalizer = localizer(moment);
 
@@ -16,6 +17,10 @@ function TutorProfileView() {
   const [isSelf, setIsSelf] = useState(false);
   const [sessions, setSessions] = useState([]);
   const {tutor} = location.state;
+  const [selectedStart, setSelectedStart] = useState(null);
+  const [selectedEnd, setSelectedEnd] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState('BiblioTEC 2nd Floor');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (user != null) {
@@ -40,9 +45,13 @@ function TutorProfileView() {
   };
 
   const convertToEvent = session => {
-    let title = 'Free Block';
-    if (session.status === 'ongoing') {
-      title = session.student.name;
+    let title = session.place;
+    if (session.status === 'pending') {
+      title = `${session.place} - ${session.student.name} (occupied)`;
+    } else {
+      if (isSelf) {
+        title += ' (open)';
+      }
     }
 
     session.start = new Date(session.start);
@@ -50,16 +59,165 @@ function TutorProfileView() {
     return {...session, title, allDay: false, resource: null};
   };
 
+  const onCreateEvent = ({start, end}) => {
+    for (let date of sessions) {
+      if (
+        (start > date.start && start < date.end) ||
+        (date.start >= start && date.start <= end)
+      ) {
+        return;
+      }
+    }
+
+    setSelectedStart(start);
+    setSelectedEnd(end);
+    setShowModal(true);
+  };
+
+  const onChangeLocation = e => {
+    setSelectedPlace(e.target.value);
+  };
+
+  const onModalConfirm = async () => {
+    setSessions(prev =>
+      prev.concat({
+        start: selectedStart,
+        end: selectedEnd,
+        title: selectedPlace,
+        tutor: user._id,
+        student: null,
+        status: 'open',
+        place: selectedPlace,
+      }),
+    );
+
+    const response = await fetch(`${SERVER_URL}/api/users/createSession`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: user._id,
+        session: {
+          start: selectedStart,
+          end: selectedEnd,
+          place: selectedPlace,
+          status: 'open',
+          tutor: user._id,
+          student: null,
+        },
+      }),
+    });
+    onModalClose();
+  };
+
+  const onModalClose = () => {
+    setSelectedPlace('BiblioTEC 2nd Floor');
+    setSelectedStart(null);
+    setSelectedEnd(null);
+    setShowModal(false);
+  };
+
+  const modal = (
+    <Modal show={showModal}>
+      <Modal.Header>
+        <Modal.Title>Choose Location</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Choose one of the available locations inside Campus Monterrey.
+        <Form.Control
+          style={{marginTop: '10px'}}
+          as="select"
+          onChange={onChangeLocation}
+        >
+          <option>BiblioTEC 2nd Floor</option>
+          <option>BiblioTEC 3rd Floor</option>
+          <option>BiblioTEC 4th Floor</option>
+          <option>BiblioTEC 5th Floor</option>
+          <option>BiblioTEC 6th Floor</option>
+          <option>CETEC 1st Floor</option>
+          <option>Innovaction Gym</option>
+        </Form.Control>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onModalClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={onModalConfirm}>
+          Confirm
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   const onSelectEvent = async event => {
     const start = event.start.toLocaleString('en-US', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true,
     });
+    const end = event.end.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
+    const day = event.start.toLocaleString().split(',')[0];
+
     if (isSelf) {
-      //new Date().
+      if (event.status === 'open') {
+        const conf = window.confirm(
+          `Delete this event? (${day} ${start} - ${end} at ${event.place})`,
+        );
+        if (conf) {
+          const response = await fetch(
+            `${SERVER_URL}/api/users/deleteSession`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: user._id,
+                sessionID: event._id,
+              }),
+            },
+          );
+
+          const json = await response.json();
+          if (json.success) {
+            setSessions(prev =>
+              prev.filter(session => session._id !== event._id),
+            );
+          }
+        }
+      }
     } else {
-      const conf = window.confirm(`Setup session at ${start}`);
+      const conf = window.confirm(
+        `Setup session for ${day} ${start} - ${end} at ${event.place}?`,
+      );
+
+      if (conf) {
+        const response = await fetch(
+          `${SERVER_URL}/api/sessions/edit/${event._id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              student: user._id,
+              status: 'pending',
+            }),
+          },
+        );
+
+        const json = await response.json();
+        if (json.success) {
+          setSessions(prev =>
+            prev.filter(session => session._id !== event._id),
+          );
+        }
+      }
     }
   };
 
@@ -102,6 +260,7 @@ function TutorProfileView() {
                 : (sessions || []).filter(keepOpen).map(convertToEvent)
             }
             defaultView={Views.WEEK}
+            onSelectSlot={onCreateEvent}
             onSelectEvent={onSelectEvent}
             views={['week']}
             min={new Date(2017, 10, 0, 8, 0, 0)}
@@ -109,6 +268,7 @@ function TutorProfileView() {
           />
         </Card.Body>
       </Card>
+      {modal}
     </div>
   );
 }
