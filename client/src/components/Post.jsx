@@ -11,7 +11,6 @@ function Post({title, author, description}) {
           Posted by <Link>@{author}</Link>
         </Card.Subtitle>
         <Card.Text>{description}</Card.Text>
-        <Card.Link href="#">Send message</Card.Link>
       </Card.Body>
     </Card>
   );

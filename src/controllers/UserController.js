@@ -26,7 +26,10 @@ router.get('/myTutors', async (req, res) => {
 
   // find study sessions
   let sessions = user.sessions.filter(session => {
-    return session.student === user._id;
+    if (session.student == null) {
+      return false;
+    }
+    return session.student.equals(user._id);
   });
 
   sessions = await Promise.all(
@@ -36,14 +39,28 @@ router.get('/myTutors', async (req, res) => {
   );
 
   // find current sessions
-  const current = sessions.filter(session => {
+  let current = sessions.filter(session => {
     return session.status === 'pending';
   });
 
   // find past sessions
-  const past = sessions.filter(session => {
+  let past = sessions.filter(session => {
     return session.status === 'closed';
   });
+
+  current = await Promise.all(
+    current.map(async session => {
+      session.tutor = await session.tutor.populateReferences();
+      return session;
+    }),
+  );
+
+  past = await Promise.all(
+    past.map(async session => {
+      session.tutor = await session.tutor.populateReferences();
+      return session;
+    }),
+  );
 
   return res.status(200).json({success: true, current, past});
 });
@@ -53,18 +70,20 @@ router.get('/myStudents', async (req, res) => {
   user = await user.populateReferences();
 
   let sessions = user.sessions.filter(session => {
-    return sessions.tutor === user._id;
+    return session.tutor.equals(user._id);
   });
 
   sessions = await Promise.all(
     sessions.map(async session => {
-      return await sessions.populateReferences();
+      return await session.populateReferences();
     }),
   );
 
   const current = sessions.filter(session => {
-    return sessions.status === 'pending';
+    return session.status === 'pending';
   });
+
+  current.map(async curr => await user.populateReferences());
 
   return res.status(200).json({success: true, current});
 });
