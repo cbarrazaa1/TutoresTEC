@@ -2,10 +2,10 @@
 
 ## Table of contents
 * [General information](#general-info)
-* [ Technologies. ] (#tech)
-* [ Usage. ] (#usage)
-* [ Features. ] (#features)
-* [ Roadmap. ] (#roadmap)
+* [Technologies](#tech)
+* [Usage](#usage)
+* [Features](#features)
+* [Roadmap](#roadmap)
 
 <a name="general-info"></a>
 ## General information
