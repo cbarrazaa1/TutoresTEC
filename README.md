@@ -1,15 +1,21 @@
 # TutoresTEC
 
 ## Table of contents
-* [ General information. ] (#general-info)
-* [ Technologies. ] (#tech)
-* [ Usage. ] (#usage)
-* [ Features. ] (#features)
-* [ Roadmap. ] (#roadmap)
+* [General information](#general-info)
+* [Team Members](#team)
+* [Technologies](#tech)
+* [Usage](#usage)
+* [Features](#features)
+* [Roadmap](#roadmap)
 
 <a name="general-info"></a>
 ## General information
 The purpose of this web application is to enhance mutual support between ITESM students. TutoresTEC intends to become a tool where students can ask for help in subjects where they want to strengthen their knowledge. The most interesting part of this website is that it will be 100% for students, giving the opportunity to tutor students to share their experience and skills in the topics or subjects where they have an outstanding performance.
+
+<a name="team"></a>
+## Team Members
+* Cesar Barraza <cbarrazaa1@gmail.com>
+* Isabel Cruz <isabel.cruz81699@gmail.com>
 
 <a name="tech"></a>
 ## Technologies
