@@ -69,6 +69,10 @@ function SideBar() {
     history.replace('/');
   };
 
+  const onTutorProfileClick = () => {
+    history.push({pathname: '/home/profile', state: {tutor: user}});
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.profileContainer}>
@@ -136,9 +140,15 @@ function SideBar() {
           </ListGroup.Item>
         ) : null}
         <ListGroup.Item style={styles.tutorBtnContainer}>
-          <Button variant="primary" block onClick={onBecomeTutorClick}>
-            Become tutor
-          </Button>
+          {user && user.userType === 0 ? (
+            <Button variant="primary" block onClick={onBecomeTutorClick}>
+              Become Tutor
+            </Button>
+          ) : (
+            <Button variant="primary" block onClick={onTutorProfileClick}>
+              My Tutor Profile
+            </Button>
+          )}
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action onClick={onLogoutClick}>
           <FiPower style={styles.icon}></FiPower>
