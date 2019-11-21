@@ -102,7 +102,11 @@ function MyTutorsView({history}) {
               You haven't scheduled a tutoring session. Find the perfect tutor,
               schedule a lesson and start learning!
             </h5>
-            <Button variant="success" onClick={onFindTutorClick}>
+            <Button
+              style={{marginTop: '8px'}}
+              variant="success"
+              onClick={onFindTutorClick}
+            >
               <FiSearch></FiSearch> Find a tutor
             </Button>
           </Card.Body>

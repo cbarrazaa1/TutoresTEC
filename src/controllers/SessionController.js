@@ -204,4 +204,47 @@ router.put('/cancel', async (req, res) => {
     .json({success: true, message: 'Session cancelled successfully'});
 });
 
+router.put('/cancelByTutor', async (req, res) => {
+  const {sessionID, tutorID, studentID} = req.body;
+  const tutor = await User.findById(tutorID);
+  const student = await User.findById(studentID);
+  const session = await Session.findById(sessionID);
+
+  // modify session
+  session.status = 'open';
+  session.student = null;
+  await session.save();
+
+  // modify student
+  student.sessions = student.sessions.filter(id => !id.equals(sessionID));
+  await student.save();
+
+  // send notification to student
+  const start = new Date(session.start).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const end = new Date(session.end).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const day = new Date(session.start).toLocaleString().split(',')[0];
+  const notification = await Notification.create({
+    type: 0,
+    message: `Tutor ${tutor.name} has cancelled the tutoring session scheduled for ${day} ${start} - ${end}!`,
+    receivedTime: Date.now(),
+    receiver: studentID,
+    triggeredBy: session.tutor,
+  });
+  student.notifications.push(notification);
+  student.hasNewNotifications = true;
+  await student.save();
+
+  return res
+    .status(200)
+    .json({success: true, message: 'Session cancelled successfully'});
+});
+
 module.exports = router;
