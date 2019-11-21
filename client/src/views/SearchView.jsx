@@ -109,12 +109,16 @@ function SearchView() {
       </h5>
       {results.length === 0
         ? selectedIndex === 0 &&
-          topTutors.map(tutor => <TutorSearchRow tutor={tutor} />)
+          topTutors.map(tutor => (
+            <TutorSearchRow key={tutor._id} tutor={tutor} />
+          ))
         : query === '' &&
           selectedIndex === 0 &&
-          topTutors.map(tutor => <TutorSearchRow tutor={tutor} />)}
+          topTutors.map(tutor => (
+            <TutorSearchRow key={tutor._id} tutor={tutor} />
+          ))}
       {selectedIndex === 0 &&
-        results.map(tutor => <TutorSearchRow tutor={tutor} />)}
+        results.map(tutor => <TutorSearchRow key={tutor._id} tutor={tutor} />)}
     </div>
   );
 }

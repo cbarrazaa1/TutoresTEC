@@ -14,7 +14,7 @@ export function UserContextProvider({children}) {
   );
 }
 
-export function useCurrentUser() {
+export function useCurrentUser(force = false) {
   const history = useHistory();
   const location = history.location;
   const [isValidToken, setIsValidToken] = useState(false);

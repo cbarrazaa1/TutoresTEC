@@ -19,6 +19,75 @@ router.get('/toprated', async (req, res) => {
   return res.status(200).json({success: true, users});
 });
 
+router.get('/myTutors', async (req, res) => {
+  // find user by id
+  let user = await User.findById(req.query.id);
+  user = await user.populateReferences();
+
+  // find study sessions
+  let sessions = user.sessions.filter(session => {
+    if (session.student == null) {
+      return false;
+    }
+    return session.student.equals(user._id);
+  });
+
+  sessions = await Promise.all(
+    sessions.map(async session => {
+      return await session.populateReferences();
+    }),
+  );
+
+  // find current sessions
+  let current = sessions.filter(session => {
+    return session.status === 'pending';
+  });
+
+  // find past sessions
+  let past = sessions.filter(session => {
+    return session.status === 'closed';
+  });
+
+  current = await Promise.all(
+    current.map(async session => {
+      session.tutor = await session.tutor.populateReferences();
+      return session;
+    }),
+  );
+
+  past = await Promise.all(
+    past.map(async session => {
+      session.tutor = await session.tutor.populateReferences();
+      return session;
+    }),
+  );
+
+  return res.status(200).json({success: true, current, past});
+});
+
+router.get('/myStudents', async (req, res) => {
+  let user = await User.findById(req.query.id);
+  user = await user.populateReferences();
+
+  let sessions = user.sessions.filter(session => {
+    return session.tutor.equals(user._id);
+  });
+
+  sessions = await Promise.all(
+    sessions.map(async session => {
+      return await session.populateReferences();
+    }),
+  );
+
+  const current = sessions.filter(session => {
+    return session.status === 'pending';
+  });
+
+  current.map(async curr => await user.populateReferences());
+
+  return res.status(200).json({success: true, current});
+});
+
 router.get('/search', async (req, res) => {
   const {q, populated} = req.query;
   let users = await User.find({name: {$regex: q, $options: 'i'}, userType: 1});

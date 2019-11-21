@@ -9,6 +9,8 @@ import NotificationsView from './NotificationsView';
 import BecomeTutorView from './BecomeTutorView';
 import CreatePostView from './CreatePostView';
 import SearchView from './SearchView';
+import MyTutorsView from './MyTutorsView';
+import MyStudentsView from './MyStudentsView';
 import {SERVER_URL} from '../config';
 import TutorProfileView from './TutorProfileView';
 
@@ -72,6 +74,12 @@ function HomeView({history}) {
           </Route>
           <Route exact path="/home/profile">
             <TutorProfileView />
+          </Route>
+          <Route exact path="/home/myTutors">
+            <MyTutorsView />
+          </Route>
+          <Route exact path="/home/myStudents">
+            <MyStudentsView />
           </Route>
         </Switch>
       </div>

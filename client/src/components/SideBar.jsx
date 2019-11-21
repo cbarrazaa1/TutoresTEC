@@ -1,16 +1,38 @@
 import Cookies from 'js-cookie';
 import * as React from 'react';
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
-import {withRouter, Link} from 'react-router-dom';
+import {withRouter, useHistory, useLocation, Link} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 
-function SideBar({history}) {
+function SideBar() {
   const [activeIndex, setActiveIndex] = useState(0);
   const {user} = useCurrentUser();
+  const history = useHistory();
+  const location = useLocation();
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/home':
+        setActiveIndex(0);
+        break;
+      case '/home/search':
+        setActiveIndex(1);
+        break;
+      case '/home/notifications':
+        setActiveIndex(2);
+        break;
+      case '/home/myTutors':
+        setActiveIndex(3);
+        break;
+      case '/home/myStudents':
+        setActiveIndex(4);
+        break;
+    }
+  }, [location]);
 
   const isActive = index => {
     return index === activeIndex;
@@ -28,11 +50,13 @@ function SideBar({history}) {
         history.push('/home/notifications');
         break;
       case 3:
+        history.push('/home/myTutors');
         break;
       case 4:
+        history.push('/home/myStudents');
         break;
     }
-    setActiveIndex(index);
+    //setActiveIndex(index);
   };
 
   const onBecomeTutorClick = () => {
@@ -91,26 +115,26 @@ function SideBar({history}) {
           <FaInbox style={styles.icon}></FaInbox>
           Inbox
         </ListGroup.Item> */}
+        <ListGroup.Item
+          style={styles.listItem}
+          action
+          active={isActive(3)}
+          onClick={() => onOptionClick(3)}
+        >
+          <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
+          My tutors
+        </ListGroup.Item>
         {user && user.userType ? (
           <ListGroup.Item
             style={styles.listItem}
             action
-            active={isActive(3)}
-            onClick={() => onOptionClick(3)}
+            active={isActive(4)}
+            onClick={() => onOptionClick(4)}
           >
             <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
             My students
           </ListGroup.Item>
         ) : null}
-        <ListGroup.Item
-          style={styles.listItem}
-          action
-          active={isActive(4)}
-          onClick={() => onOptionClick(4)}
-        >
-          <FaChalkboardTeacher style={styles.icon}></FaChalkboardTeacher>
-          My tutors
-        </ListGroup.Item>
         <ListGroup.Item style={styles.tutorBtnContainer}>
           <Link
             to={{
