@@ -5,7 +5,7 @@ import {Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
-import {withRouter, useHistory, useLocation} from 'react-router-dom';
+import {withRouter, useHistory, useLocation, Link} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 
 function SideBar() {

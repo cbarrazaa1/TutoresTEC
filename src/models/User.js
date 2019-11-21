@@ -78,7 +78,8 @@ UserSchema.methods.populateReferences = async function() {
 
   this.sessions = await Promise.all(
     this.sessions.map(async id => {
-      return await Session.findById(id);
+      const session = await Session.findById(id);
+      return await session.populateReferences();
     }),
   );
 

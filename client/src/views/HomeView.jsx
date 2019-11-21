@@ -12,6 +12,7 @@ import SearchView from './SearchView';
 import MyTutorsView from './MyTutorsView';
 import MyStudentsView from './MyStudentsView';
 import {SERVER_URL} from '../config';
+import TutorProfileView from './TutorProfileView';
 
 function HomeView({history}) {
   const [posts, setPosts] = useState([]);
@@ -70,6 +71,9 @@ function HomeView({history}) {
           </Route>
           <Route exact path="/home/search">
             <SearchView />
+          </Route>
+          <Route exact path="/home/profile">
+            <TutorProfileView />
           </Route>
           <Route exact path="/home/myTutors">
             <MyTutorsView />
