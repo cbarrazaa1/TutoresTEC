@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Badge, Card} from 'react-bootstrap';
 import {FaStar} from 'react-icons/fa';
+import {Link} from 'react-router-dom';
 import CourseTokenizer from './CourseTokenizer';
 
 function TutorSearchRow({tutor}) {
@@ -8,7 +9,14 @@ function TutorSearchRow({tutor}) {
     <Card style={styles.root}>
       <Card.Body>
         <Card.Subtitle style={styles.subtitle}>
-          {tutor.name}{' '}
+          <Link
+            to={{
+              pathname: '/home/profile',
+              state: {tutor},
+            }}
+          >
+            {tutor.name}
+          </Link>
           <Badge style={{marginLeft: '8px'}} variant="secondary">
             {tutor.bachelor.shortName}
           </Badge>
