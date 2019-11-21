@@ -14,7 +14,7 @@ export function UserContextProvider({children}) {
   );
 }
 
-export function useCurrentUser() {
+export function useCurrentUser(force = false) {
   const history = useHistory();
   const location = history.location;
   const [isValidToken, setIsValidToken] = useState(false);
@@ -28,7 +28,14 @@ export function useCurrentUser() {
       });
       const json = await response.json();
       setIsValidToken(json.success);
-      setUser(json.user);
+
+      if (force) {
+        setUser(json.user);
+      } else {
+        if (user != null) {
+          setUser(json.user);
+        }
+      }
 
       if (!json.success) {
         if (location.pathname === '/' || location.pathname === '/signup') {
