@@ -29,9 +29,7 @@ export function useCurrentUser() {
       const json = await response.json();
       setIsValidToken(json.success);
 
-      if (user != null) {
-        setUser(json.user);
-      }
+      setUser(json.user);
 
       if (!json.success) {
         if (location.pathname === '/' || location.pathname === '/signup') {

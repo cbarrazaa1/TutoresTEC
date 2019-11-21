@@ -5,7 +5,7 @@ import {Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 
 function SideBar({history}) {
@@ -112,9 +112,22 @@ function SideBar({history}) {
           My tutors
         </ListGroup.Item>
         <ListGroup.Item style={styles.tutorBtnContainer}>
-          <Button variant="primary" block onClick={onBecomeTutorClick}>
-            Become tutor
-          </Button>
+          <Link
+            to={{
+              pathname:
+                user && user.userType !== 0
+                  ? '/home/becometutor'
+                  : '/home/profile',
+              state: user && user.userType === 1 && {tutor: user},
+            }}
+            style={{color: '#ffffff', display: 'flex', flex: 1}}
+          >
+            <Button variant="primary" block onClick={onBecomeTutorClick}>
+              {user && user.userType !== 0
+                ? 'My Tutor Profile'
+                : 'Become Tutor'}
+            </Button>
+          </Link>
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action onClick={onLogoutClick}>
           <FiPower style={styles.icon}></FiPower>

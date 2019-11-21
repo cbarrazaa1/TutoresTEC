@@ -29,11 +29,12 @@ router.post('/create', async (req, res) => {
 
   sessions = await Promise.all(
     sessions.map(async session => {
-      const {start, end, tutor} = session;
+      const {start, end, tutor, place} = session;
       return await Session.create({
         start,
         end,
         tutor,
+        place,
         student: null,
         status: 'open',
       });
