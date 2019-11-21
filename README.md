@@ -1,7 +1,7 @@
 # TutoresTEC
 
 ## Table of contents
-* [ General information. ] (#general-info)
+* [General information](#general-info)
 * [ Technologies. ] (#tech)
 * [ Usage. ] (#usage)
 * [ Features. ] (#features)
