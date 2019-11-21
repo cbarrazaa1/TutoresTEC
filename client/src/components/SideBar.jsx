@@ -5,7 +5,7 @@ import {Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
-import {withRouter, useHistory, useLocation} from 'react-router-dom';
+import {withRouter, useHistory, useLocation, Link} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 
 function SideBar() {
@@ -67,6 +67,10 @@ function SideBar() {
   const onLogoutClick = () => {
     Cookies.set('jwt', '');
     history.replace('/');
+  };
+
+  const onTutorProfileClick = () => {
+    history.push({pathname: '/home/profile', state: {tutor: user}});
   };
 
   return (
@@ -136,9 +140,15 @@ function SideBar() {
           </ListGroup.Item>
         ) : null}
         <ListGroup.Item style={styles.tutorBtnContainer}>
-          <Button variant="primary" block onClick={onBecomeTutorClick}>
-            Become tutor
-          </Button>
+          {user && user.userType === 0 ? (
+            <Button variant="primary" block onClick={onBecomeTutorClick}>
+              Become Tutor
+            </Button>
+          ) : (
+            <Button variant="primary" block onClick={onTutorProfileClick}>
+              My Tutor Profile
+            </Button>
+          )}
         </ListGroup.Item>
         <ListGroup.Item style={styles.listItem} action onClick={onLogoutClick}>
           <FiPower style={styles.icon}></FiPower>

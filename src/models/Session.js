@@ -21,6 +21,10 @@ const SessionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
+  place: {
+    type: String,
+    required: true,
+  },
 });
 
 SessionSchema.methods.populateReferences = async function() {

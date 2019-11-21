@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, Card, Form, InputGroup} from 'react-bootstrap';
+import {Button, Card, Form, InputGroup, Modal} from 'react-bootstrap';
 import CourseTokenizer from '../components/CourseTokenizer';
 import {useEffect, useState, useRef, useContext} from 'react';
 import localizer from 'react-big-calendar/lib/localizers/moment';
@@ -16,6 +16,10 @@ function BecomeTutorView() {
   const [courses, setCourses] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
+  const [selectedStart, setSelectedStart] = useState(null);
+  const [selectedEnd, setSelectedEnd] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState('BiblioTEC 2nd Floor');
+  const [showModal, setShowModal] = useState(false);
   const courseCombobox = useRef(null);
   const {user} = useCurrentUser();
 
@@ -81,9 +85,9 @@ function BecomeTutorView() {
       }
     }
 
-    setSelectedDates(prev =>
-      prev.concat({start, end, tutor: user._id, student: null, status: 'open'}),
-    );
+    setSelectedStart(start);
+    setSelectedEnd(end);
+    setShowModal(true);
   };
 
   const onSelectEvent = ({start, end}) => {
@@ -106,8 +110,66 @@ function BecomeTutorView() {
     });
 
     const json = await response.json();
-    console.log(json);
   };
+
+  const onChangeLocation = e => {
+    setSelectedPlace(e.target.value);
+  };
+
+  const onModalConfirm = () => {
+    setSelectedDates(prev =>
+      prev.concat({
+        start: selectedStart,
+        end: selectedEnd,
+        title: selectedPlace,
+        tutor: user._id,
+        student: null,
+        status: 'open',
+        place: selectedPlace,
+      }),
+    );
+
+    onModalClose();
+  };
+
+  const onModalClose = () => {
+    setSelectedPlace('BiblioTEC 2nd Floor');
+    setSelectedStart(null);
+    setSelectedEnd(null);
+    setShowModal(false);
+  };
+
+  const modal = (
+    <Modal show={showModal}>
+      <Modal.Header>
+        <Modal.Title>Choose Location</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Choose one of the available locations inside Campus Monterrey.
+        <Form.Control
+          style={{marginTop: '10px'}}
+          as="select"
+          onChange={onChangeLocation}
+        >
+          <option>BiblioTEC 2nd Floor</option>
+          <option>BiblioTEC 3rd Floor</option>
+          <option>BiblioTEC 4th Floor</option>
+          <option>BiblioTEC 5th Floor</option>
+          <option>BiblioTEC 6th Floor</option>
+          <option>CETEC 1st Floor</option>
+          <option>Innovaction Gym</option>
+        </Form.Control>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onModalClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={onModalConfirm}>
+          Confirm
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 
   return (
     <div style={styles.root}>
@@ -186,6 +248,7 @@ function BecomeTutorView() {
           </div>
         </Card.Body>
       </Card>
+      {modal}
     </div>
   );
 }
