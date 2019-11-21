@@ -16,25 +16,42 @@ function TutorProfileView() {
   const {user} = useCurrentUser();
   const [isSelf, setIsSelf] = useState(false);
   const [sessions, setSessions] = useState([]);
-  const {tutor} = location.state;
+  const tutorID = location.state.tutor._id;
+  const [tutor, setTutor] = useState(null);
   const [selectedStart, setSelectedStart] = useState(null);
   const [selectedEnd, setSelectedEnd] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState('BiblioTEC 2nd Floor');
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (user != null) {
-      setIsSelf(user._id === tutor._id);
+    async function fetchTutor() {
+      const response = await fetch(
+        `${SERVER_URL}/api/users/single?id=${tutorID}`,
+        {
+          method: 'GET',
+        },
+      );
+      const json = await response.json();
+      setTutor(json.user);
+      console.log(json);
+    }
+
+    fetchTutor();
+  }, []);
+
+  useEffect(() => {
+    if (user != null && tutor != null) {
+      setIsSelf(user._id === tutorID);
       setSessions(
         tutor.sessions.filter(session => {
           if (!isSelf) {
-            return session.tutor._id === tutor._id;
+            return session.tutor._id === tutorID;
           }
           return session.tutor._id === user._id;
         }),
       );
     }
-  }, [user]);
+  }, [user, tutor]);
 
   const removeClosed = session => {
     return session.status !== 'closed';
@@ -223,29 +240,31 @@ function TutorProfileView() {
 
   return (
     <div style={styles.root}>
-      <h3 style={styles.title}>{isSelf ? 'My' : `${tutor.name}'s`} Profile</h3>
+      <h3 style={styles.title}>
+        {isSelf ? 'My' : `${tutor && tutor.name}'s`} Profile
+      </h3>
       <Card>
         <Card.Body>
           <Card.Title>Basic Information</Card.Title>
           <b>Email</b>
           <br />
-          {tutor.email}
+          {tutor && tutor.email}
           <br />
           <p style={styles.subtitle}>
             <b>Bachelor</b>
           </p>
-          {tutor.bachelor.name} ({tutor.bachelor.shortName})
+          {tutor && tutor.bachelor.name} ({tutor && tutor.bachelor.shortName})
           <br />
           <p style={styles.subtitle}>
             <b>Courses</b>
           </p>
           <div style={styles.tokenizerContainer}>
-            <CourseTokenizer tokens={tutor.courses} />
+            <CourseTokenizer tokens={(tutor && tutor.courses) || []} />
           </div>
           <p style={styles.subtitle}>
             <b>Tutor Rating</b>
           </p>
-          {tutor.rating} / 5 ({tutor.ratingCount} reviews)
+          {tutor && tutor.rating} / 5 ({tutor && tutor.ratingCount} reviews)
           <hr />
           <Card.Title>Schedule</Card.Title>
           {!isSelf &&

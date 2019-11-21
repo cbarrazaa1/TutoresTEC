@@ -4,6 +4,14 @@ const {Session} = require('../models/Session');
 
 const router = express.Router();
 
+router.get('/single', async (req, res) => {
+  const {id} = req.query;
+  const user = await User.findById(id);
+  const populatedUser = await user.populateReferences();
+
+  return res.status(200).json({success: true, user: populatedUser});
+});
+
 router.get('/toprated', async (req, res) => {
   const {populated} = req.query;
   let users = await User.find({userType: 1})

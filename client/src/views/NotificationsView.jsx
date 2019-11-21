@@ -3,6 +3,7 @@ import Notification from '../components/Notification';
 import {useCurrentUser} from '../context/UserContext';
 import {withRouter} from 'react-router-dom';
 import {useState, useEffect} from 'react';
+import {Card} from 'react-bootstrap';
 
 function NotificationsView() {
   const {user} = useCurrentUser();
@@ -18,16 +19,24 @@ function NotificationsView() {
     <div style={styles.root}>
       <h3 style={styles.title}>Notifications</h3>
       <div style={styles.container}>
-        {notifications.map((notification, i) => {
-          return (
-            <Notification
-              key={notification._id}
-              text={notification.message}
-              time={notification.receivedTime}
-              hasBottomBorder={i === notifications.length - 1}
-            />
-          );
-        })}
+        {notifications.length > 0 ? (
+          notifications.map((notification, i) => {
+            return (
+              <Notification
+                key={notification._id}
+                text={notification.message}
+                time={notification.receivedTime}
+                hasBottomBorder={i === notifications.length - 1}
+              />
+            );
+          })
+        ) : (
+          <Card>
+            <Card.Body>
+              <h5>You have no notifications!</h5>
+            </Card.Body>
+          </Card>
+        )}
       </div>
     </div>
   );

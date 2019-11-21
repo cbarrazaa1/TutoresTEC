@@ -222,6 +222,8 @@ function BecomeTutorView() {
             <CourseTokenizer
               tokens={selectedCourses}
               onDeletePress={onTokenDelete}
+              allowDelete={true}
+              showBody={true}
             />
           </Form>
           <hr />

@@ -54,7 +54,6 @@ router.put('/edit/:id', async (req, res) => {
   const {start, end, tutor, place, student, status} = req.body;
 
   const session = await Session.findById(id);
-  console.log(session);
   if (start != null) {
     session.start = start;
   }
@@ -96,7 +95,7 @@ router.put('/edit/:id', async (req, res) => {
       hour12: true,
     });
     const day = new Date(session.start).toLocaleString().split(',')[0];
-    await Notification.create({
+    const notification = await Notification.create({
       type: 0,
       message: `Student ${user.name} has scheduled a tutoring session with you for ${day} ${start} - ${end}!`,
       receivedTime: Date.now(),
@@ -105,10 +104,104 @@ router.put('/edit/:id', async (req, res) => {
     });
 
     const tutor = await User.findById(session.tutor);
+    tutor.notifications.push(notification._id);
     tutor.hasNewNotifications = true;
     await tutor.save();
   }
   return res.status(200).json({success: true, session});
+});
+
+router.put('/finish', async (req, res) => {
+  const {sessionID, tutorID, studentID, rating} = req.body;
+  const tutor = await User.findById(tutorID);
+  const student = await User.findById(studentID);
+  const session = await Session.findById(sessionID);
+
+  // modify session
+  session.status = 'closed';
+  await session.save();
+
+  // create session for tutor
+  const newSession = await Session.create({
+    start: session.start,
+    end: session.end,
+    status: 'open',
+    tutor: session.tutor,
+    student: null,
+    place: session.place,
+  });
+
+  // send notification to tutor
+  const start = new Date(session.start).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const end = new Date(session.end).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const day = new Date(session.start).toLocaleString().split(',')[0];
+  const notification = await Notification.create({
+    type: 0,
+    message: `Student ${student.name} has finished the session scheduled for ${day} ${start} - ${end} with a rating of ${rating} / 5!`,
+    receivedTime: Date.now(),
+    receiver: session.tutor,
+    triggeredBy: session.student,
+  });
+  tutor.notifications.push(notification);
+  tutor.hasNewNotifications = true;
+  tutor.sessions.push(newSession._id);
+  tutor.ratingCount += 1;
+  await tutor.save();
+
+  return res
+    .status(200)
+    .json({success: true, message: 'Session finished successfully'});
+});
+
+router.put('/cancel', async (req, res) => {
+  const {sessionID, tutorID, studentID} = req.body;
+  const tutor = await User.findById(tutorID);
+  const student = await User.findById(studentID);
+  const session = await Session.findById(sessionID);
+
+  // modify session
+  session.status = 'open';
+  session.student = null;
+  await session.save();
+
+  // modify student
+  student.sessions = student.sessions.filter(id => !id.equals(sessionID));
+  await student.save();
+
+  // send notification to tutor
+  const start = new Date(session.start).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const end = new Date(session.end).toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const day = new Date(session.start).toLocaleString().split(',')[0];
+  const notification = await Notification.create({
+    type: 0,
+    message: `Student ${student.name} has cancelled the tutoring session scheduled for ${day} ${start} - ${end}!`,
+    receivedTime: Date.now(),
+    receiver: session.tutor,
+    triggeredBy: session.student,
+  });
+  tutor.notifications.push(notification);
+  tutor.hasNewNotifications = true;
+  await tutor.save();
+
+  return res
+    .status(200)
+    .json({success: true, message: 'Session cancelled successfully'});
 });
 
 module.exports = router;
