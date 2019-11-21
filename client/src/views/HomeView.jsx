@@ -53,7 +53,7 @@ function HomeView({history}) {
                   <Post
                     key={post._id}
                     title={post.title}
-                    author={post.author.name}
+                    author={post.author}
                     description={post.content}
                   />
                 );

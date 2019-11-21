@@ -71,6 +71,11 @@ function SignUpView({history}) {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please enter a valid email.');
+      return;
+    }
+
     if (password !== confirmedPassword) {
       alert('Passwords do not match.');
       return;

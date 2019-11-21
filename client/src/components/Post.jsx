@@ -8,7 +8,15 @@ function Post({title, author, description}) {
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Subtitle style={styles.card}>
-          Posted by <Link>@{author}</Link>
+          Posted by{' '}
+          <Link
+            to={{
+              pathname: '/home/profile',
+              state: {tutor: author},
+            }}
+          >
+            {author.name}
+          </Link>
         </Card.Subtitle>
         <Card.Text>{description}</Card.Text>
       </Card.Body>

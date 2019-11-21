@@ -7,6 +7,7 @@ import {Calendar, Views} from 'react-big-calendar';
 import moment from 'moment';
 import {useCurrentUser} from '../context/UserContext';
 import {SERVER_URL} from '../config';
+import {withRouter, useHistory} from 'react-router-dom';
 
 const momentLocalizer = localizer(moment);
 
@@ -22,6 +23,7 @@ function BecomeTutorView() {
   const [showModal, setShowModal] = useState(false);
   const courseCombobox = useRef(null);
   const {user} = useCurrentUser();
+  const history = useHistory();
 
   useEffect(() => {
     async function fetchBachelors() {
@@ -62,7 +64,6 @@ function BecomeTutorView() {
 
   const onSelectCourse = e => {
     const selectedCourse = courses[e.target.value];
-    console.log(selectedCourse);
     setCourses(prev =>
       prev.filter(course => course._id !== selectedCourse._id),
     );
@@ -97,6 +98,11 @@ function BecomeTutorView() {
   };
 
   const onConfirmClick = async () => {
+    if (selectedCourses.length === 0 || selectedDates.length === 0) {
+      alert('Please select at least one course and at least one date.');
+      return;
+    }
+
     const response = await fetch(`${SERVER_URL}/api/users/becometutor`, {
       method: 'POST',
       headers: {
@@ -110,6 +116,12 @@ function BecomeTutorView() {
     });
 
     const json = await response.json();
+    if (json.success) {
+      history.push({
+        pathname: '/home/profile',
+        state: {tutor: {_id: user._id}},
+      });
+    }
   };
 
   const onChangeLocation = e => {
@@ -287,4 +299,4 @@ const styles = {
   },
 };
 
-export default BecomeTutorView;
+export default withRouter(BecomeTutorView);
