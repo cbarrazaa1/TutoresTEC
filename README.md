@@ -19,7 +19,7 @@ The purpose of this web application is to enhance mutual support between ITESM s
 
 <a name="tech"></a>
 ## Technologies
-The technologies and web development tools used for this web project where: React.js, Heroku, MongoDB, mLab, JSON, Github, Postman.
+The technologies and web development tools used for this web project were: React.js, Heroku, MongoDB, mLab, JSON, Github, Postman.
 
 <a name="usage"></a>
 ## Usage
