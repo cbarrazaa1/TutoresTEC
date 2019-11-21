@@ -42,6 +42,11 @@ function MyTutorsView({history}) {
       'Are you sure you want to finish this session?',
     );
     if (conf) {
+      let rating = window.prompt('Enter a rating for this tutor. (0 to 5)');
+      while (rating < 0 || rating > 5) {
+        rating = window.prompt('Enter a rating for this tutor. (0 to 5)');
+      }
+
       const response = await fetch(`${SERVER_URL}/api/sessions/finish`, {
         method: 'PUT',
         headers: {
@@ -51,6 +56,7 @@ function MyTutorsView({history}) {
           sessionID: session._id,
           tutorID: session.tutor._id,
           studentID: user._id,
+          rating,
         }),
       });
 

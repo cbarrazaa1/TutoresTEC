@@ -32,6 +32,8 @@ function SideBar() {
       case '/home/myStudents':
         setActiveIndex(4);
         break;
+      default:
+        setActiveIndex(-1);
     }
   }, [location]);
 
