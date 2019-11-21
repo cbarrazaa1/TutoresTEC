@@ -1,6 +1,7 @@
 const express = require('express');
 const {User} = require('../models/User');
 const {Session} = require('../models/Session');
+const {Course} = require('../models/Course');
 
 const router = express.Router();
 
@@ -99,6 +100,22 @@ router.get('/myStudents', async (req, res) => {
 router.get('/search', async (req, res) => {
   const {q, populated} = req.query;
   let users = await User.find({name: {$regex: q, $options: 'i'}, userType: 1});
+
+  if (populated) {
+    users = await Promise.all(
+      users.map(async user => await user.populateReferences()),
+    );
+  }
+
+  return res.status(200).json({success: true, users});
+});
+
+router.get('/searchByCourse', async (req, res) => {
+  const {q, populated} = req.query;
+  const courses = await Course.find({name: {$regex: q, $options: 'i'}});
+  let users = await User.find({
+    courses: {$in: courses.map(course => course._id)},
+  });
 
   if (populated) {
     users = await Promise.all(

@@ -83,7 +83,7 @@ function SideBar() {
   };
 
   const onTutorProfileClick = () => {
-    history.push({pathname: '/home/profile', state: {tutor: user}});
+    history.replace({pathname: '/home/profile', state: {tutor: user}});
   };
 
   return (

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Card, Nav, Form, Button} from 'react-bootstrap';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import TutorSearchRow from '../components/TutorSearchRow';
 import {SERVER_URL} from '../config';
 
@@ -9,6 +9,7 @@ function SearchView() {
   const [topTutors, setTopTutors] = useState([]);
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
+  const inputRef = useRef(null);
 
   useEffect(() => {
     async function fetchTopTutors() {
@@ -28,6 +29,9 @@ function SearchView() {
 
   const onNavClick = index => {
     setSelectedIndex(index);
+    setQuery('');
+    setResults([]);
+    inputRef.current.value = '';
   };
 
   const onInputChange = e => {
@@ -43,31 +47,40 @@ function SearchView() {
       return;
     }
 
-    const response = await fetch(
-      `${SERVER_URL}/api/users/search?q=${query}&populated=true`,
-      {
-        method: 'GET',
-      },
-    );
-    const json = await response.json();
-    if (json.users.length === 0) {
-      alert('No results!');
-      return;
-    }
-
     if (selectedIndex === 0) {
-      // tutors
+      const response = await fetch(
+        `${SERVER_URL}/api/users/search?q=${query}&populated=true`,
+        {
+          method: 'GET',
+        },
+      );
+      const json = await response.json();
+      if (json.users.length === 0) {
+        alert('No results!');
+        return;
+      }
       setResults(json.users);
     } else {
-      // courses
+      const response = await fetch(
+        `${SERVER_URL}/api/users/searchByCourse?q=${query}&populated=true`,
+        {
+          method: 'GET',
+        },
+      );
+      const json = await response.json();
+      if (json.users.length === 0) {
+        alert('No results!');
+        return;
+      }
+      setResults(json.users);
     }
   };
 
   let hideResuts = false;
   hideResuts =
     results.length === 0
-      ? selectedIndex === 0 && true
-      : query === '' && selectedIndex === 0 && true;
+      ? selectedIndex === 0 || selectedIndex === 1
+      : (query === '' && selectedIndex === 0) || selectedIndex === 1;
 
   return (
     <div style={styles.root}>
@@ -78,6 +91,9 @@ function SearchView() {
             <Nav.Item onClick={() => onNavClick(0)}>
               <Nav.Link eventKey="Tutors">Tutors</Nav.Link>
             </Nav.Item>
+            <Nav.Item onClick={() => onNavClick(1)}>
+              <Nav.Link eventKey="Courses">Courses</Nav.Link>
+            </Nav.Item>
           </Nav>
         </Card.Header>
         <Card.Body>
@@ -85,19 +101,16 @@ function SearchView() {
             style={{display: 'flex', flexDirection: 'row'}}
             onSubmit={onFormSubmit}
           >
-            {selectedIndex === 0 ? (
-              <Form.Control
-                type="text"
-                placeholder="Search for author name..."
-                onChange={onInputChange}
-              />
-            ) : (
-              <Form.Control
-                type="text"
-                placeholder="Search for courses..."
-                onChange={onInputChange}
-              />
-            )}
+            <Form.Control
+              type="text"
+              placeholder={
+                selectedIndex === 0
+                  ? 'Search for tutor name...'
+                  : 'Search for courses...'
+              }
+              onChange={onInputChange}
+              ref={inputRef}
+            />
             <Button type="submit" style={{marginLeft: '8px'}}>
               Search
             </Button>
@@ -108,17 +121,16 @@ function SearchView() {
         {hideResuts ? 'Top-rated Tutors' : 'Results'}
       </h5>
       {results.length === 0
-        ? selectedIndex === 0 &&
-          topTutors.map(tutor => (
+        ? topTutors.map(tutor => (
             <TutorSearchRow key={tutor._id} tutor={tutor} />
           ))
         : query === '' &&
-          selectedIndex === 0 &&
           topTutors.map(tutor => (
             <TutorSearchRow key={tutor._id} tutor={tutor} />
           ))}
-      {selectedIndex === 0 &&
-        results.map(tutor => <TutorSearchRow key={tutor._id} tutor={tutor} />)}
+      {results.map(tutor => (
+        <TutorSearchRow key={tutor._id} tutor={tutor} />
+      ))}
     </div>
   );
 }
