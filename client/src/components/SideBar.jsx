@@ -1,16 +1,38 @@
 import Cookies from 'js-cookie';
 import * as React from 'react';
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {Button, Image, ListGroup} from 'react-bootstrap';
 import {FaChalkboardTeacher, FaHome, FaInbox, FaSearch} from 'react-icons/fa';
 import {FiPower} from 'react-icons/fi';
 import {IoIosNotifications} from 'react-icons/io';
-import {withRouter} from 'react-router-dom';
+import {withRouter, useHistory, useLocation} from 'react-router-dom';
 import {useCurrentUser} from '../context/UserContext';
 
-function SideBar({history}) {
+function SideBar() {
   const [activeIndex, setActiveIndex] = useState(0);
   const {user} = useCurrentUser();
+  const history = useHistory();
+  const location = useLocation();
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/home':
+        setActiveIndex(0);
+        break;
+      case '/home/search':
+        setActiveIndex(1);
+        break;
+      case '/home/notifications':
+        setActiveIndex(2);
+        break;
+      case '/home/myTutors':
+        setActiveIndex(3);
+        break;
+      case '/home/myStudents':
+        setActiveIndex(4);
+        break;
+    }
+  }, [location]);
 
   const isActive = index => {
     return index === activeIndex;
@@ -34,7 +56,7 @@ function SideBar({history}) {
         history.push('/home/myStudents');
         break;
     }
-    setActiveIndex(index);
+    //setActiveIndex(index);
   };
 
   const onBecomeTutorClick = () => {
